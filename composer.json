@@ -1,12 +1,12 @@
 {
-  "name": "sitilge/abimo",
-  "description": "A lightweight HTTP PHP framework.",
+  "name": "sitilge/corde",
+  "description": "The core code of Abimo framework.",
   "keywords": ["framework", "abimo", "php", "http"],
   "license": "MIT",
   "homepage": "http://sitilge.id.lv",
   "support": {
-    "issues": "https://github.com/sitilge/abimo/issues",
-    "source": "https://github.com/sitilge/abimo"
+    "issues": "https://github.com/sitilge/corde/issues",
+    "source": "https://github.com/sitilge/corde"
   },
   "authors": [
     {
