@@ -237,11 +237,11 @@ class Throwable
                 echo $this->router->run();
             } else {
                 $style = $this->template
-                    ->file(SYS_PATH.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
+                    ->file(__DIR__.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
                     ->render();
 
                 echo $this->template
-                    ->file(SYS_PATH.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
+                    ->file(__DIR__.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
                     ->set('style', $style)
                     ->set('throwable', $this->throwable)
                     ->render();

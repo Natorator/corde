@@ -40,16 +40,8 @@ class Bootstrap
      */
     public function __construct()
     {
-        require SYS_PATH.DIRECTORY_SEPARATOR.'Injection'.DIRECTORY_SEPARATOR.'Provider.php';
-        require SYS_PATH.DIRECTORY_SEPARATOR.'Injection'.DIRECTORY_SEPARATOR.'Container.php';
-
         $provider = new Injection\Provider(new Injection\Container());
         $container = $provider->register();
-
-        $loader = $container['loader'];
-        $loader->register();
-        $loader->addNamespace('Abimo', SYS_PATH);
-        $loader->addNamespace('App', APP_PATH);
 
         $throwable = $container['throwable'];
         $throwable->register();

@@ -43,24 +43,6 @@ class Config
     public $data = array();
 
     /**
-     * An instance of loader class.
-     *
-     * @var \Abimo\Loader
-     */
-    public $loader;
-
-    /**
-     * Create a new config instance.
-     *
-     * @param \Abimo\Loader $loader
-     *
-     */
-    public function __construct(Loader $loader)
-    {
-        $this->loader = $loader;
-    }
-
-    /**
      * Get the config value by key.
      *
      * @param string $key
@@ -75,7 +57,7 @@ class Config
         $file = ucfirst(array_shift($keys));
 
         if (is_readable($path = APP_PATH.DIRECTORY_SEPARATOR.'Config')) {
-            $this->data[$file] = $this->loader->requireFile($path.DIRECTORY_SEPARATOR.$file.'.php');
+            $this->data[$file] = require $path.DIRECTORY_SEPARATOR.$file.'.php';
 
             if (!empty($keys)) {
                 return $this->data[$file][array_shift($keys)];

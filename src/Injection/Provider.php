@@ -66,8 +66,8 @@ class Provider
         );
 
         $this->container['config'] = $this->container->share(
-            function ($c) {
-                return new \Abimo\Config($c['loader']);
+            function () {
+                return new \Abimo\Config();
             }
         );
 
@@ -108,13 +108,6 @@ class Provider
         $this->container['helper'] = $this->container->share(
             function () {
                 return new \Abimo\Helper();
-            }
-        );
-
-        $this->container['loader'] = $this->container->share(
-            function () {
-                require SYS_PATH.DIRECTORY_SEPARATOR.'Loader.php';
-                return new \Abimo\Loader();
             }
         );
 
@@ -167,8 +160,8 @@ class Provider
         );
 
         //TODO - check sharing
-        $this->container['template'] = function ($c) {
-            return new \Abimo\Template($c['loader']);
+        $this->container['template'] = function () {
+            return new \Abimo\Template();
         };
 
         $this->container['throwable'] = $this->container->share(
