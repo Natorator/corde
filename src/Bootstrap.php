@@ -43,10 +43,8 @@ class Bootstrap
         require SYS_PATH.DIRECTORY_SEPARATOR.'Injection'.DIRECTORY_SEPARATOR.'Provider.php';
         require SYS_PATH.DIRECTORY_SEPARATOR.'Injection'.DIRECTORY_SEPARATOR.'Container.php';
 
-        $container = new Injection\Container();
-        
-        $provider = new Injection\Provider();
-        $provider->register();
+        $provider = new Injection\Provider(new Injection\Container());
+        $container = $provider->register();
 
         $loader = $container['loader'];
         $loader->register();
