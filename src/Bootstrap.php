@@ -46,11 +46,6 @@ class Bootstrap
         $provider = new Injection\Provider(new Injection\Container());
         $container = $provider->register();
 
-        $loader = $container['loader'];
-        $loader->register();
-        $loader->addNamespace('Abimo', SYS_PATH);
-        $loader->addNamespace('App', APP_PATH);
-
         $throwable = $container['throwable'];
         $throwable->register();
 

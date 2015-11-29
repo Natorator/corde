@@ -50,23 +50,6 @@ class Template
     public $file;
 
     /**
-     * An instance of loader class.
-     *
-     * @var \Abimo\Loader
-     */
-    public $loader;
-
-    /**
-     * Create a new config instance.
-     *
-     * @param \Abimo\Loader $loader
-     */
-    public function __construct(\Abimo\Loader $loader)
-    {
-        $this->loader = $loader;
-    }
-
-    /**
      * Capture the file with given data.
      *
      * @param string $file
@@ -78,7 +61,9 @@ class Template
     {
         ob_start();
 
-        $this->loader->requireFile($file, $data);
+        extract($data, EXTR_SKIP);
+
+        require $file;
 
         return ob_get_clean();
     }

@@ -117,7 +117,7 @@ class Router
     {
         $routes = array();
 
-        $this->container['loader']->requireFile(APP_PATH.DIRECTORY_SEPARATOR.'Misc'.DIRECTORY_SEPARATOR.'Routes.php');
+        require APP_PATH.DIRECTORY_SEPARATOR.'Misc'.DIRECTORY_SEPARATOR.'Routes.php';
 
         if (array_key_exists($method = $this->request->method(), static::$routes)) {
             $routes = static::$routes[$method];
