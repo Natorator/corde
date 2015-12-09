@@ -1,38 +1,7 @@
 <?php
 
-/*
- * This file is part of Abimo.
- * 
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Martins Eglitis
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 namespace Abimo;
 
-/**
- * Throwable class.
- *
- * @author Martins Eglitis
- */
 class Throwable
 {
     /**
@@ -225,11 +194,14 @@ class Throwable
      */
     public function shutdownHandler()
     {
-        if ($error = error_get_last()) {
-            $this->make($error['type'], $error['message'], $error['file'], $error['line']);
+        if ($throwable = error_get_last()) {
+            $this->make($throwable['type'], $throwable['message'], $throwable['file'], $throwable['line']);
         }
 
         if (!empty($this->throwable)) {
+            echo "<pre>";
+            print_r($this->throwable);
+            exit;
             ob_get_clean();
 
             if (empty($this->config['app']['development'])) {
@@ -237,11 +209,11 @@ class Throwable
                 echo $this->router->run();
             } else {
                 $style = $this->template
-                    ->file(__DIR__.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
+                    ->file('Throwable'.DIRECTORY_SEPARATOR.'Style.css')
                     ->render();
 
                 echo $this->template
-                    ->file(__DIR__.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
+                    ->file('Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
                     ->set('style', $style)
                     ->set('throwable', $this->throwable)
                     ->render();

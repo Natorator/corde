@@ -15,7 +15,10 @@
     }
   ],
   "require": {
-    "php": ">=5.3.0"
+    "php": ">= 5.6.0",
+    "ext-pdo": "*",
+    "phpunit/phpunit": "5.0.*",
+    "level-2/dice": "dev-master"
   },
   "autoload": {
     "psr-4": {

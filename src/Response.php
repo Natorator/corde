@@ -1,38 +1,7 @@
 <?php
 
-/*
- * This file is part of Abimo.
- * 
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Martins Eglitis
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 namespace Abimo;
 
-/**
- * Response class.
- *
- * @author Martins Eglitis
- */
 class Response
 {
     /**
@@ -99,9 +68,11 @@ class Response
      *
      * @param \Abimo\Cookie $cookie
      */
-    public function __construct(Cookie $cookie)
+    public function __construct(Config $config, Cookie $cookie, Session $session)
     {
+        $this->config = $config;
         $this->cookie = $cookie;
+        $this->session = $session;
     }
 
     /**
@@ -114,30 +85,47 @@ class Response
     public function headers(array $headers = array())
     {
         foreach ($headers as $name => $value) {
-            $this->headers[strtolower($name)] = $value;
+            $this->headers[$name] = $value;
         }
     }
 
     /**
      * Send the response by setting headers, cookies and echoing output.
      *
-     * @param string $output
-     * @param int    $code
+     * @param int $code
      *
      * @return void
      */
-    public function send($output, $code = 200)
+    public function send($code = 200)
     {
-        header('HTTP/1.1 '.$code.' '.$this->messages[$code], true, $code);
-
-        foreach ($this->headers as $name => $value) {
-            header($name.' : '.$value, true, $code);
+        //add headers
+        if (empty($this->headers)) {
+            header('HTTP/1.1 '.$code.' '.$this->messages[$code], true, $code);
+        } else {
+            foreach ($this->headers as $name => $value) {
+                header($name.' : '.$value, true, $code);
+            }
         }
 
+        //add cookies
         foreach ($this->cookie->data as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
-        } 
+        }
 
-        echo $output;
+        //add session cookie and save session
+        if (!empty($this->session->data)) {
+
+            $name = $this->config->app['name'];
+
+            if (empty($_COOKIE[$name])) {
+                $value = bin2hex(openssl_random_pseudo_bytes(10));
+
+                setcookie($name, $value, $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            } else {
+                $value = $_COOKIE[$name];
+            }
+
+            $this->session->save($value);
+        }
     }
 }

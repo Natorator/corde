@@ -1,60 +1,90 @@
 <?php
 
-/*
- * This file is part of Abimo.
- * 
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Martins Eglitis
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 namespace Abimo;
 
-/**
- * Database class.
- *
- * @author Martins Eglitis
- */
 class Database
 {
+     /**
+     * The database config array.
+     *
+     * @var array
+     */
+    public $config = array();
+    
     /**
-     * An instance of a database driver class.
+     * Database handle.
      *
      * @var callable
      */
-    public static $driver;
-
+    public $handle;
+    
     /**
-     * Create a new database singleton.
+     * Create a new pdo instance.
      *
-     * @param callable $driver
+     * @param \Abimo\Config $config
      *
-     * @return callable
+     * @throws \BadFunctionCallException
      */
-    public static function singleton($driver)
+    public function __construct(\Abimo\Config $config)
     {
-        if (null === static::$driver) {
-            static::$driver = $driver;
+        if (!class_exists('\\PDO', false)) {
+            throw new \BadFunctionCallException("Class PDO not found", 97);
+        }
+ 
+        $this->config['database'] = $config->database;
+
+        switch ($this->config['database']['driver']) {
+            case 'sqlite' :
+                $handle = new \PDO(
+                    $this->config['database']['driver'].':'.$this->config['database']['host']
+                    );
+                break;
+            default :
+                $handle = new \PDO(
+                    $this->config['database']['driver'].':'.'host='.$this->config['database']['host'].
+                    ';dbname='.$this->config['database']['schema'].
+                    ';charset=utf8', $this->config['database']['user'],
+                    $this->config['database']['password']);
+                break;
         }
 
-        return static::$driver;
+        $handle->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $handle->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+
+        $this->handle = $handle;
+    }
+    
+    /**
+     * Prepare the identifier.
+     *
+     * @param string $identifier
+     *
+     * @return string
+     */
+    public function prepareIdentifier($identifier)
+    {
+        return "`$identifier`";
+    }
+
+    /**
+     * Prepare fields for 'set' query.
+     *
+     * @param mixed $fields
+     *
+     * @return string
+     */
+    public function prepareSet($fields)
+    {
+        if (is_array($fields)) {
+            $set = '';
+            
+            foreach ($fields as $field) {
+                $set .= "`$field`=:$field, ";
+            }
+
+            return substr($set, 0, -2);
+        }
+        
+        return "`$fields`=:$fields";
     }
 }

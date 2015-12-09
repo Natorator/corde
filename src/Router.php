@@ -1,38 +1,7 @@
 <?php
 
-/*
- * This file is part of Abimo.
- * 
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Martins Eglitis
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 namespace Abimo;
 
-/**
- * Router class.
- *
- * @author Martins Eglitis
- */
 class Router
 {
     /**
@@ -48,13 +17,6 @@ class Router
      * @var array
      */
     public $args = array();
-
-    /**
-     * An instance of container class.
-     *
-     * @var \Abimo\Injection\Container
-     */
-    public $container;
 
     /**
      * An instance of config class.
@@ -96,14 +58,12 @@ class Router
 
     /**
      * Create a new response instance.
-     *
-     * @param \Abimo\Injection\Container $container
      */
-    public function __construct(Injection\Container $container)
+    public function __construct(Config $config, Request $request)
     {
-        $this->container = $container;
-        $this->config = $container['config'];
-        $this->request = $container['request'];
+        $this->config = $config;
+        $this->request = $request;
+//        $this->container = $container;
     }
 
     /**
@@ -213,7 +173,7 @@ class Router
             }
         }
 
-        throw new \ErrorException("Route strtoupper($method) $uri not found.", 90);
+        throw new \ErrorException("Route $method $uri not found.", 90);
     }
 
     /**

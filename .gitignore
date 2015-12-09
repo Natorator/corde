@@ -15,5 +15,5 @@ Temporary\ Items
 .apdisk
 .project
 .idea
-/vendor
 *.lock
+/vendor

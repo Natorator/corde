@@ -27,98 +27,17 @@
  */
 
 namespace Abimo\Session;
+use Abimo\Config;
 
-/**
- * Session database class.
- *
- * @author Martins Eglitis
- */
-class Database
+class Database implements SessionInterface
 {
-    /**
-     * The database config array.
-     *
-     * @var array
-     */
-    public $config = array();
-    
-    /**
-     * An array of data to be written to session.
-     *
-     * @var array
-     */
-    public $data = array();
-    
-    /**
-     * Database handle.
-     *
-     * @var callable
-     */
-    public $handle;
-
-    /**
-     * Create a new database instance.
-     *
-     * @param \Abimo\Config $config
-     */
-    public function __construct(\Abimo\Config $config)
+    public function __construct(Config $config)
     {
+        $this->config = $config;
     }
 
-    /**
-     * Get value by key.
-     *
-     * @param string $key
-     *
-     * @return void
-     */
-    public function get($key)
+    public function save($key, $data)
     {
-    }
-
-    /**
-     * Set value with respective key.
-     *
-     * @param string $key
-     * @param string $value
-     *
-     * @return void
-     */
-    public function set($key, $value)
-    {
-    }
-    
-    /**
-     * Delete value by key.
-     *
-     * @param string $key
-     *
-     * @return void
-     */
-    public function delete($key)
-    {
-    }
-
-    /**
-     * Read session data from session handler.
-     *
-     * @param string $key
-     *
-     * @return void
-     */
-    public function read($key)
-    {
-    }
-
-    /**
-     * Write session data to session handler.
-     *
-     * @param string $key
-     * @param string $value
-     *
-     * @return void
-     */
-    public function write($key, $value)
-    {
+        $db = new \Abimo\Database($this->config);
     }
 }
