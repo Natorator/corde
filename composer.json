@@ -17,8 +17,7 @@
   "require": {
     "php": ">= 5.6.0",
     "ext-pdo": "*",
-    "phpunit/phpunit": "5.0.*",
-    "level-2/dice": "dev-master"
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {

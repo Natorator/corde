@@ -11,22 +11,15 @@ class Bootstrap
      */
     public function __construct()
     {
-        $container = new \Dice\Dice();
+        //TODO - level-2/dice was used before as DIC
+        $config = new Config();
+        $request = new Request();
+        $router = new Router($config, $request);
+        $template = new Template();
+        $throwable = new Throwable($config, $router, $template);
 
-//        $ruleShare = array('share' => true);
-//        $container->addRule('\Abimo\Database\Mysql', $ruleShare);
-//        $container->addRule('\Abimo\Database\Pdo', $ruleShare);
-//        $container->addRule('\Abimo\Database\Sqlite', $ruleShare);
-//        $container->addRule('\Abimo\Session\Database', $ruleShare);
-//        $container->addRule('\Abimo\Session\Memcached', $ruleShare);
-//        $container->addRule('\Abimo\Session\Redis', $ruleShare);
-//
-//        $this->container = $container;
-
-        $throwable = $container->create('\Abimo\Throwable');
         $throwable->register();
 
-        $router = $container->create('\Abimo\Router');
         $router->match()->run();
     }
 }

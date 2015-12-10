@@ -46,10 +46,10 @@ class Template
      */
     public function file($file)
     {
-        if (false === strpos($file, APP_PATH)) {
-            $this->file = APP_PATH.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.$file.'.php';
-        } else {
+        if (false !== strpos($file, PROJECT_PATH)) {
             $this->file = $file;
+        } else {
+            $this->file = APP_PATH.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.$file.'.php';
         }
 
         return $this;

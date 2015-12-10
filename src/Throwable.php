@@ -199,9 +199,6 @@ class Throwable
         }
 
         if (!empty($this->throwable)) {
-            echo "<pre>";
-            print_r($this->throwable);
-            exit;
             ob_get_clean();
 
             if (empty($this->config['app']['development'])) {
@@ -209,11 +206,11 @@ class Throwable
                 echo $this->router->run();
             } else {
                 $style = $this->template
-                    ->file('Throwable'.DIRECTORY_SEPARATOR.'Style.css')
+                    ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
                     ->render();
 
                 echo $this->template
-                    ->file('Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
+                    ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
                     ->set('style', $style)
                     ->set('throwable', $this->throwable)
                     ->render();

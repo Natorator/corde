@@ -63,7 +63,6 @@ class Router
     {
         $this->config = $config;
         $this->request = $request;
-//        $this->container = $container;
     }
 
     /**
