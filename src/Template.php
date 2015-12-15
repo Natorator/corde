@@ -19,25 +19,6 @@ class Template
     public $file;
 
     /**
-     * Capture a file with given data.
-     *
-     * @param string $file
-     * @param array  $data
-     *
-     * @return string
-     */
-    public function capture($file, array $data = array())
-    {
-        ob_start();
-
-        extract($data, EXTR_SKIP);
-
-        require $file;
-
-        return ob_get_clean();
-    }
-
-    /**
      * Set a file.
      *
      * @param string $file
@@ -101,6 +82,12 @@ class Template
             $this->file($file);
         }
 
-        return $this->capture($this->file, $this->data);
+        ob_start();
+
+        extract($this->data, EXTR_SKIP);
+
+        require $this->file;
+
+        return ob_get_clean();
     }
 }
