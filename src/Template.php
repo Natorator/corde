@@ -19,7 +19,7 @@ class Template
     public $file;
 
     /**
-     * Capture the file with given data.
+     * Capture a file with given data.
      *
      * @param string $file
      * @param array  $data
@@ -38,7 +38,7 @@ class Template
     }
 
     /**
-     * Set the file.
+     * Set a file.
      *
      * @param string $file
      *
@@ -89,7 +89,7 @@ class Template
     }
 
     /**
-     * Render the file.
+     * Render a file.
      *
      * @param string $file
      *

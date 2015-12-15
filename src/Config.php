@@ -17,32 +17,26 @@ class Config
      * @param string $key
      *
      * @return mixed
-     *
-     * @throws \ErrorException
      */
     public function get($key)
     {
         $keys = explode('.', $key);
         $file = ucfirst(array_shift($keys));
 
-        if (is_readable($path = APP_PATH.DIRECTORY_SEPARATOR.'Config')) {
-            $this->data[$file] = require $path.DIRECTORY_SEPARATOR.$file.'.php';
+        $this->data[$file] = require APP_PATH.DIRECTORY_SEPARATOR.'Config'.DIRECTORY_SEPARATOR.$file.'.php';
 
-            if (!empty($keys)) {
-                return $this->data[$file][array_shift($keys)];
-            }
-
-            return $this->data[$file];
+        if (!empty($keys)) {
+            return $this->data[$file][array_shift($keys)];
         }
 
-        throw new \ErrorException("No $file found.", 90);
+        return $this->data[$file];
     }
 
     /**
      * Set the config key and value.
      *
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return void
      */
@@ -74,7 +68,7 @@ class Config
      * Magically call set method.
      *
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return void
      */

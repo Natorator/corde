@@ -5,14 +5,14 @@ namespace Abimo;
 class Router
 {
     /**
-     * The action to execute.
+     * An action to execute.
      *
      * @var mixed
      */
     public $action;
 
     /**
-     * Args to pass to action.
+     * An array of args.
      *
      * @var array
      */
@@ -69,8 +69,6 @@ class Router
      * Get all routes.
      *
      * @return array
-     *
-     * @throws \ErrorException
      */
     private function routes()
     {
@@ -86,15 +84,11 @@ class Router
             $routes = $routes + static::$routes['all'];
         }
 
-        if (empty($routes)) {
-            throw new \ErrorException("No routes found APP_PATH.DIRECTORY_SEPARATOR.'Misc'.DIRECTORY_SEPARATOR.'Routes.php'", 100);
-        }
-
         return $routes;
     }
 
     /**
-     * Get url by route.
+     * Get an url by route.
      *
      * @param string $route
      * @param array  $args
@@ -104,7 +98,7 @@ class Router
     public function url($route, $args = array())
     {
         if (empty(static::$map[$route])) {
-            return false;
+            return null;
         }
 
         if (!is_array($args)) {
@@ -121,7 +115,7 @@ class Router
                 $arg = array_shift($args);
 
                 if (null === $arg && false === strpos($exp, '?')) {
-                    return false;
+                    return null;
                 } elseif (null !== $arg) {
                     $url[] = $arg;
                 }
@@ -141,7 +135,7 @@ class Router
             return $url;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -222,7 +216,7 @@ class Router
         $method = array_shift($actions);
 
         if (method_exists($class, $method)) {
-            return call_user_func_array(array(new $class($this->container), $method), $this->args);
+            return call_user_func_array(array(new $class, $method), $this->args);
         }
 
         throw new \ErrorException("Action $this->action doesn't exist.", 100);

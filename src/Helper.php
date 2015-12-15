@@ -8,7 +8,7 @@ class Helper
      * Pretty-print the input.
      *
      * @param mixed $input
-     * @param bool  $print
+     * @param bool $print
      *
      * @return void
      */

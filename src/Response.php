@@ -5,6 +5,13 @@ namespace Abimo;
 class Response
 {
     /**
+     * An instance of config class.
+     *
+     * @var \Abimo\Config
+     */
+    public $config;
+
+    /**
      * An instance of cookie class.
      *
      * @var \Abimo\Cookie
@@ -64,9 +71,18 @@ class Response
     );
 
     /**
+     * An instance of session class.
+     *
+     * @var \Abimo\Session
+     */
+    public $session;
+
+    /**
      * Create a new response instance.
      *
+     * @param \Abimo\Config $config
      * @param \Abimo\Cookie $cookie
+     * @param \Abimo\Session $session
      */
     public function __construct(Config $config, Cookie $cookie, Session $session)
     {
@@ -90,7 +106,7 @@ class Response
     }
 
     /**
-     * Send the response by setting headers, cookies and echoing output.
+     * Send a response.
      *
      * @param int $code
      *
@@ -119,6 +135,7 @@ class Response
 
             if (empty($_COOKIE[$name])) {
                 $value = bin2hex(openssl_random_pseudo_bytes(10));
+                $cookie = $this->config->cookie;
 
                 setcookie($name, $value, $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
             } else {

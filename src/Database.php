@@ -12,7 +12,7 @@ class Database
     public $config = array();
     
     /**
-     * Database handle.
+     * The database handle.
      *
      * @var callable
      */
@@ -25,7 +25,7 @@ class Database
      *
      * @throws \BadFunctionCallException
      */
-    public function __construct(\Abimo\Config $config)
+    public function __construct(Config $config)
     {
         if (!class_exists('\\PDO', false)) {
             throw new \BadFunctionCallException("Class PDO not found", 97);
@@ -53,38 +53,20 @@ class Database
 
         $this->handle = $handle;
     }
-    
-    /**
-     * Prepare the identifier.
-     *
-     * @param string $identifier
-     *
-     * @return string
-     */
-    public function prepareIdentifier($identifier)
-    {
-        return "`$identifier`";
-    }
 
     /**
-     * Prepare fields for 'set' query.
+     * Backtick the input.
      *
-     * @param mixed $fields
+     * @param mixed $input
      *
-     * @return string
+     * @return mixed
      */
-    public function prepareSet($fields)
+    public function backtick($input)
     {
-        if (is_array($fields)) {
-            $set = '';
-            
-            foreach ($fields as $field) {
-                $set .= "`$field`=:$field, ";
-            }
-
-            return substr($set, 0, -2);
+        if (is_array($input)) {
+            return array_map(array($this, 'backtick'), $input);
         }
-        
-        return "`$fields`=:$fields";
+
+        return '`'.$input.'`';
     }
 }

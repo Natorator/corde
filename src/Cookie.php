@@ -11,6 +11,9 @@ class Cookie
      */
     public $config = array();
 
+    /**
+     * @var array $data
+     */
     public $data = array();
 
     /**
@@ -24,19 +27,24 @@ class Cookie
         $this->config['cookie'] = $config->cookie;
     }
 
-    public function set($name, $value, $expire = null, $path = null, $domain = null, $secure = false, $httponly = false)
+    /**
+     * Set a cookie.
+     *
+     * @param string $name
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     *
+     * @return void
+     */
+    public function set($name, $value = null, $expire = null, $path = null, $domain = null, $secure = false, $httponly = false)
     {
-        if (null === $expire) {
-            $expire = $this->config['cookie']['expire'];
-        }
-
-        if (null === $path) {
-            $path = $this->config['cookie']['path'];
-        }
-
-        if (null === $domain) {
-            $domain = $this->config['app']['url'];
-        }
+        $expire = null === $expire ? $this->config['cookie']['expire'] : $expire;
+        $path = null === $path ? $this->config['cookie']['path'] : $path;
+        $domain = null === $domain ? $this->config['cookie']['domain'] : $domain;
 
         $this->data[$name] = array('name' => $name, 'value' => $value, 'expire' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly);
     }
@@ -50,7 +58,11 @@ class Cookie
      */
     public function get($name)
     {
-        return !empty($this->data[$name]) ? $this->data[$name]['value'] : null;
+        if (!empty($$this->data[$name])) {
+            return $this->data[$name]['value'];
+        }
+
+        return null;
     }
 
     /**

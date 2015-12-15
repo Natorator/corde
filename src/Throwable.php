@@ -12,7 +12,7 @@ class Throwable
     public $config;
 
     /**
-     * The error messages array .
+     * The error messages array.
      *
      * @var array
      */
@@ -35,7 +35,7 @@ class Throwable
     );
 
     /**
-     * The exception messages array .
+     * The exception messages array.
      *
      * @var array
      */

@@ -32,11 +32,10 @@ class Memcached
      */
     public function __construct(\Abimo\Config $config)
     {
-//        phpinfo();exit;
         if (!class_exists('\\Memcached', false)) {
             throw new \BadFunctionCallException("Class Memcached not found", 97);
         }
-//        echo 123;exit;
+
         $this->config['app'] = $config->app;
         $this->config['memcached'] = $config->memcached;
         $this->config['session'] = $config->session;
