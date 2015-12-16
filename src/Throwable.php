@@ -16,7 +16,7 @@ class Throwable
      *
      * @var array
      */
-    public $errorMessages = array(
+    public $errorMessages = [
         E_ERROR => 'E_ERROR',
         E_WARNING => 'E_WARNING',
         E_PARSE => 'E_PARSE',
@@ -32,14 +32,14 @@ class Throwable
         E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
         E_DEPRECATED => 'E_DEPRECATED',
         E_USER_DEPRECATED => 'E_USER_DEPRECATED'
-    );
+    ];
 
     /**
      * The exception messages array.
      *
      * @var array
      */
-    public $exceptionMessages = array(
+    public $exceptionMessages = [
         //Predefined Exceptions
         89 => 'Exception',
         90 => 'ErrorException',
@@ -63,7 +63,7 @@ class Throwable
         107 => 'RuntimeException',
         108 => 'UnderflowException',
         109 => 'UnexpectedValueException'
-    );
+    ];
 
     /**
      * An instance of router class.
@@ -84,7 +84,7 @@ class Throwable
      *
      * @var array
      */
-    public $throwable = array();
+    public $throwable = [];
 
     /**
      * Create a new throwable instance.
@@ -113,9 +113,9 @@ class Throwable
         ini_set('log_errors', $this->config['throwable']['log']);
         ini_set('error_log', $this->config['throwable']['path']);
 
-        set_error_handler(array($this, 'errorHandler'));
-        set_exception_handler(array($this, 'exceptionHandler'));
-        register_shutdown_function(array($this, 'shutdownHandler'));
+        set_error_handler([$this, 'errorHandler']);
+        set_exception_handler([$this, 'exceptionHandler']);
+        register_shutdown_function([$this, 'shutdownHandler']);
     }
 
     /**
@@ -131,7 +131,7 @@ class Throwable
      */
     public function make($code, $type, $message, $file, $line = '')
     {
-        $this->throwable = array('code' => $code, 'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line);
+        $this->throwable = ['code' => $code, 'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line];
     }
 
     /**
@@ -202,7 +202,7 @@ class Throwable
             ob_get_clean();
 
             if (empty($this->config['app']['development'])) {
-                $this->router->action = implode('.', array($this->config['throwable']['controller'], $this->config['throwable']['action']));
+                $this->router->action = implode('.', [$this->config['throwable']['controller'], $this->config['throwable']['action']]);
                 echo $this->router->run();
             } else {
                 $style = $this->template

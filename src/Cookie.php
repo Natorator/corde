@@ -12,6 +12,8 @@ class Cookie
     public $config = array();
 
     /**
+     * The cookie data array.
+     *
      * @var array $data
      */
     public $data = array();
@@ -30,7 +32,7 @@ class Cookie
     /**
      * Set a cookie.
      *
-     * @param string $name
+     * @param string $key
      * @param string $value
      * @param int $expire
      * @param string $path
@@ -40,42 +42,76 @@ class Cookie
      *
      * @return void
      */
-    public function set($name, $value = null, $expire = null, $path = null, $domain = null, $secure = false, $httponly = false)
+    public function set($key, $value = null, $expire = null, $path = null, $domain = null, $secure = false, $httponly = false)
     {
         $expire = null === $expire ? $this->config['cookie']['expire'] : $expire;
         $path = null === $path ? $this->config['cookie']['path'] : $path;
         $domain = null === $domain ? $this->config['cookie']['domain'] : $domain;
 
-        $this->data[$name] = array('name' => $name, 'value' => $value, 'expire' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly);
+        $this->data[$key] = array('key' => $key, 'value' => $value, 'expire' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly);
     }
 
     /**
-     * Get a cookie by name.
+     * Get a cookie by key.
      *
-     * @param string $name
+     * @param string $key
      *
      * @return mixed
      */
-    public function get($name)
+    public function get($key)
     {
-        if (!empty($$this->data[$name])) {
-            return $this->data[$name]['value'];
+        if (!empty($this->data[$key])) {
+            return $this->data[$key]['value'];
         }
 
         return null;
     }
 
     /**
-     * Delete a cookie by name.
+     * Delete a cookie by key.
      *
-     * @param string $name
+     * @param string $key
      *
      * @return void
      */
-    public function delete($name)
+    public function delete($key)
     {
-        if (isset($this->data[$name])) {
-            unset($this->data[$name]);
+        if (isset($this->data[$key])) {
+            unset($this->data[$key]);
         }
+    }
+
+    /**
+     * Save cookies to client.
+     *
+     * @param array $cookie
+     *
+     * @return void
+     */
+    public function save(array $cookie = [])
+    {
+        if (!empty($cookie)) {
+            array_map(array($this, 'set'), $cookie);
+        }
+
+        foreach ($this->data as $cookie) {
+            setcookie($cookie['key'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+        }
+    }
+
+    /**
+     * Load cookies from client.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function load($key)
+    {
+        if (isset($_COOKIE[$key])) {
+            return $_COOKIE[$key];
+        }
+
+        return null;
     }
 }

@@ -2,10 +2,8 @@
 
 namespace Abimo\Session;
 
-class Database implements SessionInterface
+class Runtime implements SessionInterface
 {
-    public $config;
-
     public function __construct(\Abimo\Config $config)
     {
         $this->config = $config;
@@ -13,7 +11,7 @@ class Database implements SessionInterface
 
     public function save($data)
     {
-        $db = new \Abimo\Database($this->config);
+        //
     }
 
     public function load($key)

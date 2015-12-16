@@ -9,7 +9,7 @@ class Template
      *
      * @var array
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * The file to be used when capturing.

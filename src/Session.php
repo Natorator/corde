@@ -28,38 +28,86 @@ class Session
     public $data = array();
 
     /**
+     * The session driver.
+     *
+     * @var callable
+     */
+    public $driver;
+
+    /**
      * Create a new session instance.
      *
      * @param \Abimo\Config $config
      */
     public function __construct(Config $config)
     {
+        switch ($config->session['driver']) {
+            case 'database' :
+                $this->driver = new Session\Database($config);
+                break;
+
+            case 'memcached' :
+                $this->driver = new Session\Memcached($config);
+                break;
+
+            default :
+                $this->driver = new Session\Runtime($config);
+                break;
+        }
+
         $this->config['app'] = $config->app;
         $this->config['session'] = $config->session;
-        $this->configObject = $config;
     }
 
-    public function get($key = false)
-    {
-        return unserialize($this->data[$key]);
-    }
-
-    public function set($key, $value)
+    /**
+     * Set session data.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function set($key, $value = null)
     {
         $this->data[$key] = serialize($value);
     }
 
-    public function save($key)
+    /**
+     * Get session data by key.
+     *
+     * @param $key
+     * @return mixed
+     */
+    public function get($key)
     {
-        switch ($this->config['session']['driver']) {
-            case 'database' :
-                $driver = new Session\Database($this->configObject);
-                break;
-            case 'memcached' :
-                $driver = new Session\Memcached($this->configObject);
-                break;
+        if (!empty($this->data[$key])) {
+            return unserialize($this->data[$key]);
         }
 
-        $driver->save($key, $this->data);
+        return null;
+    }
+
+    /**
+     * Save session.
+     *
+     * @param array $session
+     */
+    public function save(array $session = [])
+    {
+        if (!empty($session)) {
+            array_map(array($this, 'set'), $session);
+        }
+
+        $this->driver->save($this->data);
+    }
+
+    /**
+     * Load session.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function load($key)
+    {
+        return $this->driver->load($key);
     }
 }

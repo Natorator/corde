@@ -9,7 +9,7 @@ class Config
      *
      * @var array
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * Get the config value by key.

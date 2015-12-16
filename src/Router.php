@@ -16,7 +16,7 @@ class Router
      *
      * @var array
      */
-    public $args = array();
+    public $args = [];
 
     /**
      * An instance of config class.
@@ -37,10 +37,10 @@ class Router
      *
      * @var array
      */
-    public $patterns = array(
+    public $patterns = [
         ':number' => '?([0-9]+)',
         ':slug' => '?([^/]+)'
-    );
+    ];
 
     /**
      * An instance of request class.
@@ -54,10 +54,12 @@ class Router
      *
      * @var array
      */
-    public static $routes = array();
+    public static $routes = [];
 
     /**
      * Create a new response instance.
+     * @param \Abimo\Config $config
+     * @param \Abimo\Request $request
      */
     public function __construct(Config $config, Request $request)
     {
@@ -72,7 +74,7 @@ class Router
      */
     private function routes()
     {
-        $routes = array();
+        $routes = [];
 
         require APP_PATH.DIRECTORY_SEPARATOR.'Misc'.DIRECTORY_SEPARATOR.'Routes.php';
 
@@ -95,19 +97,19 @@ class Router
      *
      * @return mixed
      */
-    public function url($route, $args = array())
+    public function url($route, $args = [])
     {
         if (empty(static::$map[$route])) {
             return null;
         }
 
         if (!is_array($args)) {
-            $args = array($args);
+            $args = [$args];
         }
 
         $exploded = explode('/', static::$map[$route]);
 
-        $url = array();
+        $url = [];
 
         foreach ($exploded as $exp) {
             if (false !== strpos($exp, ':')) {
@@ -216,7 +218,7 @@ class Router
         $method = array_shift($actions);
 
         if (method_exists($class, $method)) {
-            return call_user_func_array(array(new $class, $method), $this->args);
+            return call_user_func_array([new $class, $method], $this->args);
         }
 
         throw new \ErrorException("Action $this->action doesn't exist.", 100);

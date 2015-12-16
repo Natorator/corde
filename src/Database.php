@@ -9,7 +9,7 @@ class Database
      *
      * @var array
      */
-    public $config = array();
+    public $config = [];
     
     /**
      * The database handle.
@@ -68,7 +68,7 @@ class Database
     public function backtick($input)
     {
         if (is_array($input)) {
-            return array_map(array($this, 'backtick'), $input);
+            return array_map([$this, 'backtick'], $input);
         }
 
         return '`'.$input.'`';

@@ -23,14 +23,14 @@ class Response
      *
      * @var array
      */
-    public $headers = array();
+    public $headers = [];
 
     /**
      * The response messages array.
      *
      * @var array
      */
-    public $messages = array(
+    public $messages = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         200 => 'OK',
@@ -68,7 +68,7 @@ class Response
         503 => 'Service Unavailable',
         504 => 'Gateway Time-out',
         505 => 'HTTP Version not supported'
-    );
+    ];
 
     /**
      * An instance of session class.
@@ -98,7 +98,7 @@ class Response
      *
      * @return void
      */
-    public function headers(array $headers = array())
+    public function headers(array $headers = [])
     {
         foreach ($headers as $name => $value) {
             $this->headers[$name] = $value;
@@ -114,7 +114,7 @@ class Response
      */
     public function send($code = 200)
     {
-        //add headers
+        //save headers
         if (empty($this->headers)) {
             header('HTTP/1.1 '.$code.' '.$this->messages[$code], true, $code);
         } else {
@@ -123,26 +123,22 @@ class Response
             }
         }
 
-        //add cookies
-        foreach ($this->cookie->data as $cookie) {
-            setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
-        }
-
-        //add session cookie and save session
+        //set session cookie and save session
         if (!empty($this->session->data)) {
 
             $name = $this->config->app['name'];
 
-            if (empty($_COOKIE[$name])) {
+            if (empty($this->cookie->load($name))) {
                 $value = bin2hex(openssl_random_pseudo_bytes(10));
-                $cookie = $this->config->cookie;
-
-                setcookie($name, $value, $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+                $this->cookie->set($name, $value);
             } else {
-                $value = $_COOKIE[$name];
+                $value = $this->cookie->load($name);
             }
 
             $this->session->save($value);
         }
+
+        //save cookies
+        $this->cookie->save();
     }
 }
