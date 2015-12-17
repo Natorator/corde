@@ -26,39 +26,88 @@ class Database implements SessionInterface
 
         $sessionTable = $sessionConfig['table'];
 
-        $statementTableExists = $this->instance->handle->prepare("SHOW TABLES LIKE '$sessionTable'");
+        $statement = $this->instance->handle->prepare("SHOW TABLES LIKE '$sessionTable'");
+        $statement->execute();
 
-        $statementTableExists->execute();
+        $statementId = $this->instance->backtick('id');
+        $statementCookieKey = $this->instance->backtick('cookie_key');
+        $statementCookieValue = $this->instance->backtick('cookie_value');
+        $statementKey = $this->instance->backtick('key');
+        $statementValue = $this->instance->backtick('value');
+        $statementDateCreated = $this->instance->backtick('date_created');
+        $statementDateUpdated = $this->instance->backtick('date_updated');
 
-        $sessionColumnIdBacktick = $this->instance->backtick('id');
-        $sessionColumnKeyBacktick = $this->instance->backtick('key');
-        $sessionColumnValueBacktick = $this->instance->backtick('value');
+        if (empty($statement->rowCount())) {
+            $this->instance->handle
+                ->prepare(
+                    "CREATE TABLE $sessionTable (
+                    $statementId INT (11) AUTO_INCREMENT PRIMARY KEY,
+                    $statementCookieKey VARCHAR (255) NOT NULL,
+                    $statementCookieValue VARCHAR (255) NOT NULL,
+                    $statementKey VARCHAR (255) NOT NULL,
+                    $statementValue BLOB NULL,
+                    $statementDateCreated TIMESTAMP NULL,
+                    $statementDateUpdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP )
+                ENGINE=InnoDB DEFAULT CHARSET=utf8
+                ")
+                ->execute();
 
-        if (empty($statementTableExists->rowCount())) {
-            $statementTableCreate = $this->instance->handle->prepare(
-                "CREATE TABLE $sessionTable (
-                $sessionColumnIdBacktick INT(11) AUTO_INCREMENT PRIMARY KEY,
-                $sessionColumnKeyBacktick VARCHAR(255) NOT NULL,
-                $sessionColumnValueBacktick BLOB
-                )"
-            );
-
-            $statementTableCreate->execute();
+            $this->instance->handle
+                ->prepare(
+                    "CREATE UNIQUE INDEX uk_$sessionTable on $sessionTable (
+                        $statementCookieKey,
+                        $statementCookieValue,
+                        $statementKey
+                )")
+                ->execute();
         }
 
-        $statementInsert = $this->instance->handle->prepare(
-            "INSERT INTO $sessionTable (
-              $sessionColumnKeyBacktick,
-              $sessionColumnValueBacktick)
+        $statement = $this->instance->handle
+            ->prepare(
+                "INSERT INTO $sessionTable (
+                $statementCookieKey,
+                $statementCookieValue,
+                $statementKey,
+                $statementValue,
+                $statementDateCreated)
             VALUES (
-              :key,
-              :value
-            )
-            "
-        );
+                :cookieKeyInsert,
+                :cookieValueInsert,
+                :keyInsert,
+                :valueInsert,
+                :dateCreatedInsert)
+            ON DUPLICATE KEY UPDATE
+                $statementCookieKey = :cookieKeyUpdate,
+                $statementCookieValue = :cookieValueUpdate,
+                $statementKey = :keyUpdate,
+                $statementValue = :valueUpdate
+            ");
 
-        foreach ($data as $key => $value) {
-            $statementInsert->execute(['key' => $key, 'value' => serialize($value)]);
+        $cookieKey = $this->config->app['name'];
+
+        //TODO - optimize here
+        if (null === $this->cookie->load($cookieKey)) {
+            $cookieValue = bin2hex(openssl_random_pseudo_bytes(10));
+        } else {
+            $cookieValue = $this->cookie->load($cookieKey);
+        }
+
+        $this->cookie->save([$cookieKey, $cookieValue]);
+
+        foreach ($data as $key => $value ) {
+            $statement->execute([
+                //insert params
+                'cookieKeyInsert' => $cookieKey,
+                'cookieValueInsert' => $cookieValue,
+                'keyInsert' => $key,
+                'valueInsert' => $value = serialize($value),
+                'dateCreatedInsert' => date('Y-m-d H:i:s', time()),
+                //update params
+                'cookieKeyUpdate' => $cookieKey,
+                'cookieValueUpdate' => $cookieValue,
+                'keyUpdate' => $key,
+                'valueUpdate' => $value
+            ]);
         }
     }
 
@@ -68,22 +117,31 @@ class Database implements SessionInterface
 
         $sessionTable = $sessionConfig['table'];
 
-        $sessionColumnIdBacktick = $this->instance->backtick('id');
-        $sessionColumnKeyBacktick = $this->instance->backtick('key');
-        $sessionColumnValueBacktick = $this->instance->backtick('value');
+        $statementCookieKey = $this->instance->backtick('cookie_key');
+        $statementCookieValue = $this->instance->backtick('cookie_value');
+        $statementKey = $this->instance->backtick('key');
 
-        $statementSelect = $this->instance->handle->prepare(
-            "SELECT
-              $sessionColumnIdBacktick,
-              $sessionColumnKeyBacktick,
-              $sessionColumnValueBacktick
-            FROM $sessionTable
-            WHERE $sessionColumnKeyBacktick = :key
-            "
-        );
+        $statement = $this->instance->handle
+            ->prepare(
+                "SELECT
+                    *
+                FROM $sessionTable
+                WHERE
+                    $statementCookieKey = :cookieKey AND
+                    $statementCookieValue = :cookieValue AND
+                    $statementKey = :key
+                "
+            );
 
-        $statementSelect->execute(['key' => $key]);
+        $cookieKey = $this->config->app['name'];
+        $cookieValue = $this->cookie->load($cookieKey);
 
-        return $statementSelect->fetchAll();
+        $statement->execute([
+            'cookieKey' => $cookieKey,
+            'cookieValue' => $cookieValue,
+            'key' => $key
+        ]);
+
+        return $statement->fetchAll();
     }
 }

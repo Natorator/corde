@@ -9,14 +9,14 @@ class Memcached implements SessionInterface
      *
      * @var array
      */
-    public $config = array();
+    public $config = [];
 
     /**
      * An array of data to be written to session.
      *
      * @var array
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * Memcached instance.
@@ -29,8 +29,9 @@ class Memcached implements SessionInterface
      * Create a new memcached instance.
      *
      * @param \Abimo\Config $config
+     * @param \Abimo\Cookie $cookie
      */
-    public function __construct(\Abimo\Config $config)
+    public function __construct(\Abimo\Config $config, \Abimo\Cookie $cookie)
     {
         if (!class_exists('\\Memcached', false)) {
             throw new \BadFunctionCallException("Class Memcached not found", 97);
@@ -47,45 +48,6 @@ class Memcached implements SessionInterface
             $this->instance = new \Memcached();
 
             $this->instance->addServer($memcached['host'], $memcached['port']);
-        }
-    }
-
-    /**
-     * Get value by key.
-     *
-     * @param string $key
-     *
-     * @return string
-     */
-    public function get($key)
-    {
-        return $this->data[$key];
-    }
-
-    /**
-     * Set value with respective key.
-     *
-     * @param string $key
-     * @param string $value
-     *
-     * @return void
-     */
-    public function set($key, $value)
-    {
-        $this->data[$key] = $value;
-    }
-
-    /**
-     * Delete value by key.
-     *
-     * @param string $key
-     *
-     * @return void
-     */
-    public function delete($key)
-    {
-        if (isset($this->data[$key])) {
-            unset($this->data[$key]);
         }
     }
 

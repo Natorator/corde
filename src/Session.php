@@ -25,7 +25,7 @@ class Session
      *
      * @var array
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * The session driver.
@@ -94,7 +94,7 @@ class Session
     public function save(array $session = [])
     {
         if (!empty($session)) {
-            array_map(array($this, 'set'), $session);
+            array_map([$this, 'set'], [array_shift($session)], $session);
         }
 
         $this->driver->save($this->data);

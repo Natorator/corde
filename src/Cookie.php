@@ -9,14 +9,14 @@ class Cookie
      *
      * @var array
      */
-    public $config = array();
+    public $config = [];
 
     /**
      * The cookie data array.
      *
      * @var array $data
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * Create a new cookie instance.
@@ -48,7 +48,7 @@ class Cookie
         $path = null === $path ? $this->config['cookie']['path'] : $path;
         $domain = null === $domain ? $this->config['cookie']['domain'] : $domain;
 
-        $this->data[$key] = array('key' => $key, 'value' => $value, 'expire' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly);
+        $this->data[$key] = ['key' => $key, 'value' => $value, 'expire' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly];
     }
 
     /**
@@ -91,7 +91,7 @@ class Cookie
     public function save(array $cookie = [])
     {
         if (!empty($cookie)) {
-            array_map(array($this, 'set'), $cookie);
+            array_map([$this, 'set'], [array_shift($cookie)], $cookie);
         }
 
         foreach ($this->data as $cookie) {
