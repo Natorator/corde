@@ -123,20 +123,23 @@ class Response
             }
         }
 
+        //save session
+        $this->session->save();
+
         //set session cookie and save session
-        if (!empty($this->session->data)) {
-
-            $name = $this->config->app['name'];
-
-            if (empty($this->cookie->load($name))) {
-                $value = bin2hex(openssl_random_pseudo_bytes(10));
-                $this->cookie->set($name, $value);
-            } else {
-                $value = $this->cookie->load($name);
-            }
-
-            $this->session->save($value);
-        }
+//        if (!empty($this->session->data)) {
+//
+//            $name = $this->config->app['name'];
+//
+//            if (empty($this->cookie->load($name))) {
+//                $value = bin2hex(openssl_random_pseudo_bytes(10));
+//                $this->cookie->set($name, $value);
+//            } else {
+//                $value = $this->cookie->load($name);
+//            }
+//
+//            $this->session->save($value);
+//        }
 
         //save cookies
         $this->cookie->save();

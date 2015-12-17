@@ -38,20 +38,21 @@ class Session
      * Create a new session instance.
      *
      * @param \Abimo\Config $config
+     * @param \Abimo\Cookie $cookie
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, Cookie $cookie)
     {
         switch ($config->session['driver']) {
             case 'database' :
-                $this->driver = new Session\Database($config);
+                $this->driver = new Session\Database($config, $cookie);
                 break;
 
             case 'memcached' :
-                $this->driver = new Session\Memcached($config);
+                $this->driver = new Session\Memcached($config, $cookie);
                 break;
 
             default :
-                $this->driver = new Session\Runtime($config);
+                $this->driver = new Session\Runtime($config, $cookie);
                 break;
         }
 

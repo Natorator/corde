@@ -103,11 +103,12 @@ class Factory
      *
      * @return \Abimo\Session
      */
-    public function session(Config $config = null)
+    public function session(Config $config = null, Cookie $cookie = null)
     {
         $config = null === $config ? $this->config() : $config;
+        $cookie = null === $cookie ? $this->config() : $cookie;
 
-        return new Session($config);
+        return new Session($config, $cookie);
     }
 
     /**
