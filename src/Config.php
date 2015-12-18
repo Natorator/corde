@@ -5,14 +5,12 @@ namespace Abimo;
 class Config
 {
     /**
-     * The cookie config array.
-     *
      * @var array
      */
     public $data = [];
 
     /**
-     * Get the config value by key.
+     * Get the config value by the key.
      *
      * @param string $key
      *
@@ -33,7 +31,7 @@ class Config
     }
 
     /**
-     * Set the config key and value.
+     * Set the config key and the value.
      *
      * @param string $key
      * @param mixed $value
@@ -53,7 +51,7 @@ class Config
     }
 
     /**
-     * Magically call get method.
+     * Magically call the get method.
      *
      * @param string $key
      *
@@ -65,7 +63,7 @@ class Config
     }
 
     /**
-     * Magically call set method.
+     * Magically call the set method.
      *
      * @param string $key
      * @param mixed $value

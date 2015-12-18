@@ -5,36 +5,26 @@ namespace Abimo;
 class Router
 {
     /**
-     * An action to execute.
-     *
      * @var mixed
      */
     public $action;
 
     /**
-     * An array of args.
-     *
      * @var array
      */
     public $args = [];
 
     /**
-     * An instance of config class.
-     *
-     * @var callable
+     * @var Config
      */
-    public $config;
+    private $config;
 
     /**
-     * An array of route-pattern mapping.
-     *
      * @var array
      */
-    public static $map;
+    public static $map = [];
 
     /**
-     * An array of route patterns.
-     *
      * @var array
      */
     public $patterns = [
@@ -43,11 +33,9 @@ class Router
     ];
 
     /**
-     * An instance of request class.
-     *
-     * @var callable
+     * @var Request
      */
-    public $request;
+    private $request;
 
     /**
      * An array of routes.
@@ -57,9 +45,10 @@ class Router
     public static $routes = [];
 
     /**
-     * Create a new response instance.
-     * @param \Abimo\Config $config
-     * @param \Abimo\Request $request
+     * Router constructor.
+     *
+     * @param Config $config
+     * @param Request $request
      */
     public function __construct(Config $config, Request $request)
     {
@@ -90,10 +79,10 @@ class Router
     }
 
     /**
-     * Get an url by route.
+     * Get the url by route.
      *
      * @param string $route
-     * @param array  $args
+     * @param array $args
      *
      * @return mixed
      */
@@ -141,9 +130,9 @@ class Router
     }
 
     /**
-     * Match request uri against routes.
+     * Match the request uri against the routes.
      *
-     * @return \Abimo\Router
+     * @return Router
      *
      * @throws \ErrorException
      */
@@ -172,11 +161,11 @@ class Router
     }
 
     /**
-     * Register a new route.
+     * Register the route.
      *
-     * @param string   $method
-     * @param string   $pattern
-     * @param mixed    $routes
+     * @param string $method
+     * @param string $pattern
+     * @param mixed $routes
      * @param callable $action
      *
      * @return void
@@ -195,7 +184,7 @@ class Router
     }
 
     /**
-     * Run router in respect to action and args.
+     * Run the router.
      *
      * @return mixed
      *
@@ -225,10 +214,10 @@ class Router
     }
 
     /**
-     * Magically register a new route.
+     * Magically register the new route.
      *
      * @param string $method
-     * @param array  $args
+     * @param array $args
      *
      * @return void
      */

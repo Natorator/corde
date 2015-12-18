@@ -5,25 +5,21 @@ namespace Abimo;
 class Template
 {
     /**
-     * The data array to be used when capturing.
-     *
      * @var array
      */
-    public $data = [];
+    private $data = [];
 
     /**
-     * The file to be used when capturing.
-     *
-     * @var array
+     * @var string
      */
-    public $file;
+    private $file = '';
 
     /**
-     * Set a file.
+     * Set the file.
      *
      * @param string $file
      *
-     * @return \Abimo\Template
+     * @return Template
      */
     public function file($file)
     {
@@ -37,7 +33,7 @@ class Template
     }
 
     /**
-     * Set new data.
+     * Set the new data.
      *
      * @param string $key
      * @param string $value
@@ -58,7 +54,7 @@ class Template
     }
 
     /**
-     * Get data by key.
+     * Get the data by the key.
      *
      * @param string $key
      *
@@ -70,7 +66,7 @@ class Template
     }
 
     /**
-     * Render a file.
+     * Render the file.
      *
      * @param string $file
      *

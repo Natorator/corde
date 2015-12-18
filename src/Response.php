@@ -5,34 +5,29 @@ namespace Abimo;
 class Response
 {
     /**
-     * An instance of config class.
-     *
-     * @var \Abimo\Config
+     * @var Config
      */
-    public $config;
+    private $config;
 
     /**
-     * An instance of cookie class.
-     *
-     * @var \Abimo\Cookie
+     * @var array
      */
-    public $cookie;
+    public $cookies = [];
 
     /**
-     * The headers array.
-     *
      * @var array
      */
     public $headers = [];
 
     /**
-     * The response messages array.
-     *
      * @var array
      */
     public $messages = [
+        // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
+
+        // Success 2xx
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -40,12 +35,17 @@ class Response
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
+
+        // Redirection 3xx
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
-        302 => 'Moved Temporarily',
+        302 => 'Found',
         303 => 'See Other',
         304 => 'Not Modified',
         305 => 'Use Proxy',
+        307 => 'Temporary Redirect',
+
+        // Client Error 4xx
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -54,79 +54,104 @@ class Response
         405 => 'Method Not Allowed',
         406 => 'Not Acceptable',
         407 => 'Proxy Authentication Required',
-        408 => 'Request Time-out',
+        408 => 'Request Timeout',
         409 => 'Conflict',
         410 => 'Gone',
         411 => 'Length Required',
         412 => 'Precondition Failed',
         413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Large',
+        414 => 'Request-URI Too Long',
         415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+
+        // Server Error 5xx
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
         503 => 'Service Unavailable',
-        504 => 'Gateway Time-out',
-        505 => 'HTTP Version not supported'
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        509 => 'Bandwidth Limit Exceeded'
     ];
 
     /**
-     * An instance of session class.
+     * Response constructor.
      *
-     * @var \Abimo\Session
+     * @param Config $config
      */
-    public $session;
-
-    /**
-     * Create a new response instance.
-     *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Cookie $cookie
-     * @param \Abimo\Session $session
-     */
-    public function __construct(Config $config, Cookie $cookie, Session $session)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->cookie = $cookie;
-        $this->session = $session;
     }
 
     /**
-     * Add new response headers.
+     * Save the header for the response.
      *
-     * @param array $headers
-     *
-     * @return void
-     */
-    public function headers(array $headers = [])
-    {
-        foreach ($headers as $name => $value) {
-            $this->headers[$name] = $value;
-        }
-    }
-
-    /**
-     * Send a response.
-     *
+     * @param string $string
+     * @param bool $replace
      * @param int $code
      *
+     * @return $this
+     */
+    public function header($string, $replace = true, $code = 200)
+    {
+        $this->headers[] = [
+            'string' => $string,
+            'replace' => $replace,
+            'code' => $code
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Save the cookie for the response.
+     *
+     * @param string $key
+     * @param null $value
+     * @param null $expire
+     * @param null $path
+     * @param null $domain
+     * @param null $secure
+     * @param null $httponly
+     *
+     * @return $this
+     */
+    public function cookie($key, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null)
+    {
+        $expire = null === $expire ? $this->config->cookie['expire'] : $expire;
+        $path = null === $path ? $this->config->cookie['path'] : $path;
+        $domain = null === $domain ? $this->config->cookie['domain'] : $domain;
+        $secure = null === $secure ? $this->config->cookie['secure'] : $secure;
+        $httponly = null === $httponly ? $this->config->cookie['httponly'] : $httponly;
+
+        $this->cookies[] = [
+            'key' => $key,
+            'value' => $value,
+            'expire' => $expire,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $httponly
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Send the response.
+     *
      * @return void
      */
-    public function send($code = 200)
+    public function send()
     {
-        //save headers
-        if (empty($this->headers)) {
-            header('HTTP/1.1 '.$code.' '.$this->messages[$code], true, $code);
-        } else {
-            foreach ($this->headers as $name => $value) {
-                header($name.' : '.$value, true, $code);
-            }
+        foreach ($this->headers as $header) {
+            header($header['string'], $header['replace'], $header['code']);
         }
 
-        //save session
-        $this->session->save();
-
-        //save cookies
-        $this->cookie->save();
+        foreach ($this->cookies as $cookie) {
+            setcookie($cookie['key'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+        }
     }
 }

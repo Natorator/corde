@@ -4,24 +4,20 @@ namespace Abimo;
 
 class Database
 {
-     /**
-     * The database config array.
-     *
+    /**
      * @var array
      */
-    public $config = [];
-    
+    private $config = [];
+
     /**
-     * The database handle.
-     *
-     * @var callable
+     * @var \PDO
      */
     public $handle;
-    
+
     /**
-     * Create a new database instance.
+     * Database constructor.
      *
-     * @param \Abimo\Config $config
+     * @param Config $config
      *
      * @throws \BadFunctionCallException
      */

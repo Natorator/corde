@@ -2,113 +2,47 @@
 
 namespace Abimo;
 
-//TODO - fix this class
-
 class Session
 {
     /**
-     * The session config array.
-     *
-     * @var array
+     * @var Session\File
      */
-    public $config;
+    private $handler;
 
     /**
-     * An instance of config class.
-     *
-     * @var \Abimo\Config
+     * @var Config
      */
-    public $configObject;
+    private $config;
 
     /**
-     * The session data array.
-     *
-     * @var array
+     * @var Database
      */
-    public $data = [];
-
-    /**
-     * The session driver.
-     *
-     * @var callable
-     */
-    public $driver;
+    private $database;
 
     /**
      * Create a new session instance.
      *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Cookie $cookie
+     * @param Config $config
+     * @param Database $database
      */
-    public function __construct(Config $config, Cookie $cookie)
+    public function __construct(Config $config, Database $database)
     {
-        switch ($config->session['driver']) {
-            case 'database' :
-                $this->driver = new Session\Database($config, $cookie);
-                break;
+        $this->config = $config;
+        $this->databasr = $database;
 
-            case 'memcached' :
-                $this->driver = new Session\Memcached($config, $cookie);
-                break;
+        if (null === $this->handler) {
+            switch ($config->session['handler']) {
+                case 'database' :
+                    $this->handler = new Session\Database($config, $database);
+                    break;
 
-            default :
-                $this->driver = new Session\Runtime($config, $cookie);
-                break;
+                default :
+                    $this->handler = new Session\File($config);
+                    break;
+            }
+
+            session_set_save_handler($this->handler, true);
+//            session_start();
         }
-
-        $this->config['app'] = $config->app;
-        $this->config['session'] = $config->session;
-    }
-
-    /**
-     * Set session data.
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function set($key, $value = null)
-    {
-        $this->data[$key] = serialize($value);
-    }
-
-    /**
-     * Get session data by key.
-     *
-     * @param $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        if (!empty($this->data[$key])) {
-            return unserialize($this->data[$key]);
-        }
-
-        return null;
-    }
-
-    /**
-     * Save session.
-     *
-     * @param array $session
-     */
-    public function save(array $session = [])
-    {
-        if (!empty($session)) {
-            array_map([$this, 'set'], [array_shift($session)], $session);
-        }
-
-        $this->driver->save($this->data);
-    }
-
-    /**
-     * Load session.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function load($key)
-    {
-        return $this->driver->load($key);
     }
 }

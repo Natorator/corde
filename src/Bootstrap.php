@@ -5,7 +5,7 @@ namespace Abimo;
 class Bootstrap
 {
     /**
-     * Create a new bootstrap instance.
+     * Bootstrap constructor.
      */
     public function __construct()
     {

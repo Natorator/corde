@@ -5,15 +5,11 @@ namespace Abimo;
 class Throwable
 {
     /**
-     * An instance of config class.
-     *
-     * @var \Abimo\Config
+     * @var Config
      */
-    public $config;
+    private $config;
 
     /**
-     * The error messages array.
-     *
      * @var array
      */
     public $errorMessages = [
@@ -35,8 +31,6 @@ class Throwable
     ];
 
     /**
-     * The exception messages array.
-     *
      * @var array
      */
     public $exceptionMessages = [
@@ -49,6 +43,7 @@ class Throwable
         94 => 'DivisionByZeroError',
         95 => 'ParseError',
         96 => 'TypeError',
+
         //SPL Exceptions
         97 => 'BadFunctionCallException',
         98 => 'BadMethodCallException',
@@ -66,31 +61,25 @@ class Throwable
     ];
 
     /**
-     * An instance of router class.
-     *
-     * @var \Abimo\Router
+     * @var Router
      */
-    public $router;
+    private $router;
 
     /**
-     * An instance of template class.
-     *
-     * @var \Abimo\Template
+     * @var Template
      */
-    public $template;
+    private $template;
 
     /**
-     * An array that holds throwable data.
-     *
      * @var array
      */
-    public $throwable = [];
+    private $throwable = [];
 
     /**
-     * Create a new throwable instance.
+     * Throwable constructor.
      *
-     * @param \Abimo\Config   $config
-     * @param \Abimo\Router   $router
+     * @param \Abimo\Config $config
+     * @param \Abimo\Router $router
      * @param \Abimo\Template $template
      */
     public function __construct(Config $config, Router $router, Template $template)
@@ -119,13 +108,13 @@ class Throwable
     }
 
     /**
-     * Make a new throwable.
+     * Make the new throwable.
      *
-     * @param int    $code
+     * @param int $code
      * @param string $type
      * @param string $message
      * @param string $file
-     * @param mixed  $line
+     * @param mixed $line
      *
      * @return void
      */
@@ -135,14 +124,14 @@ class Throwable
     }
 
     /**
-     * Register error handler.
+     * Register the error handler.
      *
-     * @param int    $code
+     * @param int $code
      * @param string $message
      * @param string $file
-     * @param int    $line
+     * @param int $line
      */
-    public function errorHandler($code, $message, $file, $line)
+    private function errorHandler($code, $message, $file, $line)
     {
         $this->make($code, $this->getErrorMessage($code), $message, $file, $line);
 
@@ -150,7 +139,7 @@ class Throwable
     }
 
     /**
-     * Get error message.
+     * Get the error message.
      *
      * @param int $code
      *
@@ -164,11 +153,11 @@ class Throwable
     }
 
     /**
-     * Register exception handler.
+     * Register the exception handler.
      *
      * @param \Exception $exception
      */
-    public function exceptionHandler(\Exception $exception)
+    private function exceptionHandler(\Exception $exception)
     {
         $this->make($exception->getCode(), $this->getExceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
@@ -176,7 +165,7 @@ class Throwable
     }
 
     /**
-     * Get exception message.
+     * Get the exception message.
      *
      * @param int $code
      *
@@ -190,9 +179,11 @@ class Throwable
     }
 
     /**
-     * Register shutdown handler.
+     * Register the shutdown handler.
+     *
+     * @return void
      */
-    public function shutdownHandler()
+    private function shutdownHandler()
     {
         if ($throwable = error_get_last()) {
             $this->make($throwable['type'], $throwable['message'], $throwable['file'], $throwable['line']);

@@ -5,9 +5,9 @@ namespace Abimo;
 class Factory
 {
     /**
-     * Factory config object.
+     * Factory the config object.
      *
-     * @return \Abimo\Config
+     * @return Config
      */
     public function config()
     {
@@ -15,25 +15,11 @@ class Factory
     }
 
     /**
-     * Factory cookie object.
+     * Factory the database object.
      *
-     * @param \Abimo\Config $config
+     * @param Config $config
      *
-     * @return \Abimo\Cookie
-     */
-    public function cookie(Config $config = null)
-    {
-        $config = null === $config ? $this->config() : $config;
-
-        return new Cookie($config);
-    }
-
-    /**
-     * Factory database object.
-     *
-     * @param \Abimo\Config $config
-     *
-     * @return \Abimo\Database
+     * @return Database
      */
     public function database(Config $config = null)
     {
@@ -43,9 +29,9 @@ class Factory
     }
 
     /**
-     * Factory helper object.
+     * Factory the helper object.
      *
-     * @return \Abimo\Helper
+     * @return Helper
      */
     public function helper()
     {
@@ -53,9 +39,9 @@ class Factory
     }
 
     /**
-     * Factory request object.
+     * Factory the request object.
      *
-     * @return \Abimo\Request
+     * @return Request
      */
     public function request()
     {
@@ -63,30 +49,26 @@ class Factory
     }
 
     /**
-     * Factory response object.
+     * Factory the response object.
      *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Cookie $cookie
-     * @param \Abimo\Session $session
+     * @param Config $config
      *
-     * @return \Abimo\Response
+     * @return Response
      */
-    public function response(Config $config = null, Cookie $cookie = null, Session $session = null)
+    public function response(Config $config = null)
     {
         $config = null === $config ? $this->config() : $config;
-        $cookie = null === $cookie ? $this->cookie() : $cookie;
-        $session = null === $session ? $this->session() : $session;
 
-        return new Response($config, $cookie, $session);
+        return new Response($config);
     }
 
     /**
-     * Factory router object.
+     * Factory the router object.
      *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Request $request
+     * @param Config $config
+     * @param Request $request
      *
-     * @return \Abimo\Router
+     * @return Router
      */
     public function router(Config $config = null, Request $request = null)
     {
@@ -97,25 +79,25 @@ class Factory
     }
 
     /**
-     * Factory session object.
+     * Factory the session object.
      *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Cookie $cookie
+     * @param Config $config
+     * @param Database $database
      *
-     * @return \Abimo\Session
+     * @return Session
      */
-    public function session(Config $config = null, Cookie $cookie = null)
+    public function session(Config $config = null, Database $database = null)
     {
         $config = null === $config ? $this->config() : $config;
-        $cookie = null === $cookie ? $this->cookie() : $cookie;
+        $database = null === $database ? $this->database() : $database;
 
-        return new Session($config, $cookie);
+        return new Session($config, $database);
     }
 
     /**
-     * Factory template object.
+     * Factory the template object.
      *
-     * @return \Abimo\Template
+     * @return Template
      */
     public function template()
     {
@@ -123,13 +105,13 @@ class Factory
     }
 
     /**
-     * Factory throwable object.
+     * Factory the throwable object.
      *
-     * @param \Abimo\Config $config
-     * @param \Abimo\Router $router
-     * @param \Abimo\Template $template
+     * @param Config $config
+     * @param Router $router
+     * @param Template $template
      *
-     * @return \Abimo\Throwable
+     * @return Throwable
      */
     public function throwable(Config $config = null, Router $router = null, Template $template = null)
     {

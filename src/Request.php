@@ -5,7 +5,7 @@ namespace Abimo;
 class Request
 {
     /**
-     * Get a http user agent.
+     * Get the http user agent.
      *
      * @return mixed
      */
@@ -19,7 +19,7 @@ class Request
     }
 
     /**
-     * Get a domain.
+     * Get the domain.
      *
      * @param string $url
      *
@@ -33,7 +33,7 @@ class Request
     }
 
     /**
-     * Get a ip address.
+     * Get the ip address.
      *
      * @return mixed
      */
@@ -49,7 +49,7 @@ class Request
     }
 
     /**
-     * Get a http request method.
+     * Get the http request method.
      *
      * @return mixed
      */
@@ -63,7 +63,7 @@ class Request
     }
 
     /**
-     * Get a server name.
+     * Get the server name.
      *
      * @return mixed
      */
@@ -77,7 +77,7 @@ class Request
     }
 
     /**
-     * Get a http request protocol.
+     * Get the http request protocol.
      *
      * @return string
      */
@@ -91,7 +91,7 @@ class Request
     }
 
     /**
-     * Get a segment.
+     * Get the segment.
      *
      * @param int $index
      *
@@ -115,7 +115,7 @@ class Request
     }
 
     /**
-     * Get a http request uri.
+     * Get the http request uri.
      *
      * @return mixed
      */
