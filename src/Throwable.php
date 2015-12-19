@@ -131,7 +131,7 @@ class Throwable
      * @param string $file
      * @param int $line
      */
-    private function errorHandler($code, $message, $file, $line)
+    public function errorHandler($code, $message, $file, $line)
     {
         $this->make($code, $this->getErrorMessage($code), $message, $file, $line);
 
@@ -157,7 +157,7 @@ class Throwable
      *
      * @param \Exception $exception
      */
-    private function exceptionHandler(\Exception $exception)
+    public function exceptionHandler(\Exception $exception)
     {
         $this->make($exception->getCode(), $this->getExceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
@@ -183,7 +183,7 @@ class Throwable
      *
      * @return void
      */
-    private function shutdownHandler()
+    public function shutdownHandler()
     {
         if ($throwable = error_get_last()) {
             $this->make($throwable['type'], $throwable['message'], $throwable['file'], $throwable['line']);

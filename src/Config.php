@@ -21,7 +21,9 @@ class Config
         $keys = explode('.', $key);
         $file = ucfirst(array_shift($keys));
 
-        $this->data[$file] = require APP_PATH.DIRECTORY_SEPARATOR.'Config'.DIRECTORY_SEPARATOR.$file.'.php';
+        if (empty($this->data[$file])) {
+            $this->data[$file] = require APP_PATH.DIRECTORY_SEPARATOR.'Config'.DIRECTORY_SEPARATOR.$file.'.php';
+        }
 
         if (!empty($keys)) {
             return $this->data[$file][array_shift($keys)];

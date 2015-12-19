@@ -5,14 +5,28 @@ namespace Abimo;
 class Factory
 {
     /**
+     * @var Config
+     */
+    private static $config;
+
+    /**
      * Factory the config object.
      *
      * @return Config
      */
     public function config()
     {
-        return new Config();
+        if (null === static::$config) {
+            static::$config = new Config();
+        }
+
+        return static::$config;
     }
+
+    /**
+     * @var Database
+     */
+    private static $database;
 
     /**
      * Factory the database object.
@@ -25,7 +39,11 @@ class Factory
     {
         $config = null === $config ? $this->config() : $config;
 
-        return new Database($config);
+        if (null === static::$database) {
+            static::$database = new Database($config);
+        }
+
+        return static::$database;
     }
 
     /**
@@ -78,6 +96,8 @@ class Factory
         return new Router($config, $request);
     }
 
+    private static $session;
+
     /**
      * Factory the session object.
      *
@@ -91,7 +111,11 @@ class Factory
         $config = null === $config ? $this->config() : $config;
         $database = null === $database ? $this->database() : $database;
 
-        return new Session($config, $database);
+        if (null === static::$session) {
+            static::$session = new Session($config, $database);
+        }
+
+        return static::$session;
     }
 
     /**

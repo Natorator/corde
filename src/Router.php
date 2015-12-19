@@ -22,7 +22,7 @@ class Router
     /**
      * @var array
      */
-    public static $map = [];
+    public $map = [];
 
     /**
      * @var array
@@ -42,7 +42,7 @@ class Router
      *
      * @var array
      */
-    public static $routes = [];
+    public $routes = [];
 
     /**
      * Router constructor.
@@ -67,12 +67,12 @@ class Router
 
         require APP_PATH.DIRECTORY_SEPARATOR.'Misc'.DIRECTORY_SEPARATOR.'Routes.php';
 
-        if (array_key_exists($method = $this->request->method(), static::$routes)) {
-            $routes = static::$routes[$method];
+        if (array_key_exists($method = $this->request->method(), $this->routes)) {
+            $routes = $this->routes[$method];
         }
 
-        if (array_key_exists('all', static::$routes)) {
-            $routes = $routes + static::$routes['all'];
+        if (array_key_exists('all', $this->routes)) {
+            $routes = $routes + $this->routes['all'];
         }
 
         return $routes;
@@ -88,7 +88,7 @@ class Router
      */
     public function url($route, $args = [])
     {
-        if (empty(static::$map[$route])) {
+        if (empty($this->map[$route])) {
             return null;
         }
 
@@ -96,7 +96,7 @@ class Router
             $args = [$args];
         }
 
-        $exploded = explode('/', static::$map[$route]);
+        $exploded = explode('/', $this->map[$route]);
 
         $url = [];
 
@@ -120,7 +120,7 @@ class Router
         $aliases = array_keys($this->patterns);
         $patterns = array_values($this->patterns);
 
-        $pattern = str_replace($aliases, $patterns, static::$map[$route]);
+        $pattern = str_replace($aliases, $patterns, $this->map[$route]);
 
         if (preg_match('~^'.$pattern.'$~', $url = implode('/', $url))) {
             return $url;
@@ -170,17 +170,17 @@ class Router
      *
      * @return void
      */
-    public static function register($method, $pattern, $routes, $action)
+    public function register($method, $pattern, $routes, $action)
     {
         if (is_array($routes)) {
             foreach ($routes as $route) {
-                static::$map[$route] = $pattern;
+                $this->map[$route] = $pattern;
             }
         } else {
-            static::$map[$routes] = $pattern;
+            $this->map[$routes] = $pattern;
         }
 
-        static::$routes[$method][$pattern] = $action;
+        $this->routes[$method][$pattern] = $action;
     }
 
     /**
@@ -221,8 +221,8 @@ class Router
      *
      * @return void
      */
-    public static function __callStatic($method, $args)
+    public function __call($method, $args)
     {
-        static::register($method, array_shift($args), array_shift($args), array_shift($args));
+        $this->register($method, array_shift($args), array_shift($args), array_shift($args));
     }
 }
