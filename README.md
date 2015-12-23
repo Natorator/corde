@@ -1,3 +1,3 @@
 # Corde
 
-The core code of Abimo framework.
+The core code of the Abimo framework.
