@@ -52,7 +52,7 @@ class Request
     public function method()
     {
         if (!empty($_SERVER['REQUEST_METHOD'])) {
-            return strtolower($_SERVER['REQUEST_METHOD']);
+            return $_SERVER['REQUEST_METHOD'];
         }
     }
 
