@@ -5,7 +5,7 @@ namespace Abimo;
 class Session
 {
     /**
-     * @var Session\File
+     * @var \SessionHandlerInterface
      */
     private $handler;
 
@@ -28,21 +28,28 @@ class Session
     public function __construct(Config $config, Database $database)
     {
         $this->config = $config;
-        $this->databasr = $database;
+        $this->database = $database;
 
-        if (null === $this->handler) {
-            switch ($config->session['handler']) {
-                case 'database' :
-                    $this->handler = new Session\Database($config, $database);
-                    break;
+        switch ($this->config->session['handler']) {
+            case 'database' :
+                $this->handler = new Session\Database($this->config, $this->database);
+                break;
 
-                default :
-                    $this->handler = new Session\File($config);
-                    break;
-            }
-
-            session_set_save_handler($this->handler, true);
-//            session_start();
+            default :
+                $this->handler = new Session\File($this->config);
+                break;
         }
+
+        session_name($this->config->session['name']);
+        session_set_cookie_params(
+            $this->config->session['expire'],
+            $this->config->session['path'],
+            $this->config->session['domain'],
+            $this->config->session['secure'],
+            $this->config->session['httponly']
+        );
+
+        session_set_save_handler($this->handler, true);
+        session_start();
     }
 }

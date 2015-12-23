@@ -23,10 +23,10 @@ class Template
      */
     public function file($file)
     {
-        if (false !== strpos($file, PROJECT_PATH)) {
-            $this->file = $file;
-        } else {
-            $this->file = APP_PATH.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.$file.'.php';
+        $this->file = $file;
+
+        if (empty(pathinfo($file, PATHINFO_EXTENSION))) {
+            $this->file .= '.php';
         }
 
         return $this;

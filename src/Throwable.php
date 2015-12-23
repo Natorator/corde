@@ -79,14 +79,12 @@ class Throwable
      * Throwable constructor.
      *
      * @param \Abimo\Config $config
-     * @param \Abimo\Router $router
      * @param \Abimo\Template $template
      */
-    public function __construct(Config $config, Router $router, Template $template)
+    public function __construct(Config $config, Template $template)
     {
         $this->config['app'] = $config->app;
         $this->config['throwable'] = $config->throwable;
-        $this->router = $router;
         $this->template = $template;
     }
 
@@ -131,9 +129,9 @@ class Throwable
      * @param string $file
      * @param int $line
      */
-    private function errorHandler($code, $message, $file, $line)
+    public function errorHandler($code, $message, $file, $line)
     {
-        $this->make($code, $this->getErrorMessage($code), $message, $file, $line);
+        $this->make($code, $this->errorMessage($code), $message, $file, $line);
 
         exit;
     }
@@ -145,7 +143,7 @@ class Throwable
      *
      * @return string
      */
-    public function getErrorMessage($code)
+    public function errorMessage($code)
     {
         $default = 1;
 
@@ -157,9 +155,9 @@ class Throwable
      *
      * @param \Exception $exception
      */
-    private function exceptionHandler(\Exception $exception)
+    public function exceptionHandler(\Exception $exception)
     {
-        $this->make($exception->getCode(), $this->getExceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
+        $this->make($exception->getCode(), $this->exceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
         exit;
     }
@@ -171,7 +169,7 @@ class Throwable
      *
      * @return string
      */
-    public function getExceptionMessage($code)
+    public function exceptionMessage($code)
     {
         $default = 89;
 
@@ -183,18 +181,22 @@ class Throwable
      *
      * @return void
      */
-    private function shutdownHandler()
+    public function shutdownHandler()
     {
         if ($throwable = error_get_last()) {
-            $this->make($throwable['type'], $throwable['message'], $throwable['file'], $throwable['line']);
+            $this->make(
+                $throwable['type'],
+                $this->errorMessage($throwable['type']),
+                $throwable['message'],
+                $throwable['file'],
+                $throwable['line']);
         }
 
         if (!empty($this->throwable)) {
             ob_get_clean();
 
             if (empty($this->config['app']['development'])) {
-                $this->router->action = implode('.', [$this->config['throwable']['controller'], $this->config['throwable']['action']]);
-                echo $this->router->run();
+                call_user_func($this->config['throwable']['callable']);
             } else {
                 $style = $this->template
                     ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')

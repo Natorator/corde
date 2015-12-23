@@ -14,8 +14,6 @@ class Request
         if (!empty($_SERVER['HTTP_USER_AGENT'])) {
             return $_SERVER['HTTP_USER_AGENT'];
         }
-
-        return null;
     }
 
     /**
@@ -44,8 +42,6 @@ class Request
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             return $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
-
-        return null;
     }
 
     /**
@@ -58,8 +54,6 @@ class Request
         if (!empty($_SERVER['REQUEST_METHOD'])) {
             return strtolower($_SERVER['REQUEST_METHOD']);
         }
-
-        return null;
     }
 
     /**
@@ -72,8 +66,6 @@ class Request
         if (!empty($_SERVER['SERVER_NAME'])) {
             return $_SERVER['SERVER_NAME'];
         }
-
-        return null;
     }
 
     /**
@@ -110,8 +102,6 @@ class Request
 
             return $segments[$index];
         }
-
-        return null;
     }
 
     /**
@@ -122,11 +112,9 @@ class Request
     public function uri()
     {
         if (!empty($_SERVER['PATH_INFO'])) {
-            return parse_url($_SERVER['PATH_INFO'], PHP_URL_PATH);
+            return rawurldecode(parse_url($_SERVER['PATH_INFO'], PHP_URL_PATH));
         } elseif (!empty($_SERVER['REQUEST_URI'])) {
-            return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            return rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
-
-        return null;
     }
 }

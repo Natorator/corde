@@ -10,44 +10,56 @@ class Config
     public $data = [];
 
     /**
-     * Get the config value by the key.
+     * @var string
+     */
+    public $path;
+
+    /**
+     * Set the config path.
      *
-     * @param string $key
+     * @param $path
+     *
+     * @return $this
+     */
+    public function path($path)
+    {
+        $this->path = rtrim($path, '/');
+
+        return $this;
+    }
+
+    /**
+     * Get the config file.
+     *
+     * @param string $file
      *
      * @return mixed
      */
-    public function get($key)
+    private function get($file)
     {
-        $keys = explode('.', $key);
-        $file = ucfirst(array_shift($keys));
+        $file = ucfirst($file);
 
-        $this->data[$file] = require APP_PATH.DIRECTORY_SEPARATOR.'Config'.DIRECTORY_SEPARATOR.$file.'.php';
-
-        if (!empty($keys)) {
-            return $this->data[$file][array_shift($keys)];
+        if (empty($this->data[$file])) {
+            $this->data[$file] = require $this->path.DIRECTORY_SEPARATOR.$file.'.php';
         }
 
         return $this->data[$file];
     }
 
     /**
-     * Set the config key and the value.
+     * Set the config key and the value for the file.
      *
+     * @param string $file
      * @param string $key
      * @param mixed $value
      *
      * @return void
      */
-    public function set($key, $value)
+    private function set($file, $key, $value)
     {
-        $keys = explode('.', $key);
-        $file = array_shift($keys);
+        $file = ucfirst($file);
 
-        if (!empty($keys)) {
-            $this->data[$file][array_shift($keys)] = $value;
-        }
-
-        $this->data[$file] = $value;
+        $this->data[$file][$key] = $value;
     }
 
     /**
