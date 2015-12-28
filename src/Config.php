@@ -32,10 +32,11 @@ class Config
      * Get the config file.
      *
      * @param string $file
+     * @param string $key
      *
      * @return mixed
      */
-    private function get($file)
+    public function get($file, $key = null)
     {
         $file = ucfirst($file);
 
@@ -43,7 +44,11 @@ class Config
             $this->data[$file] = require $this->path.DIRECTORY_SEPARATOR.$file.'.php';
         }
 
-        return $this->data[$file];
+        if (null === $key) {
+            return $this->data[$file];
+        }
+
+        return $this->data[$file][$key];
     }
 
     /**
@@ -55,36 +60,10 @@ class Config
      *
      * @return void
      */
-    private function set($file, $key, $value)
+    public function set($file, $key, $value)
     {
         $file = ucfirst($file);
 
         $this->data[$file][$key] = $value;
-    }
-
-    /**
-     * Magically call the get method.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
-
-    /**
-     * Magically call the set method.
-     *
-     * @param string $file
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return void
-     */
-    public function __set($file, $key, $value)
-    {
-        $this->set($file, $key, $value);
     }
 }

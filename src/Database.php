@@ -27,7 +27,7 @@ class Database
             throw new \ErrorException('Class PDO not found');
         }
 
-        $this->config['database'] = $config->database;
+        $this->config['database'] = $config->get('database');
 
         switch ($this->config['database']['driver']) {
             case 'sqlite' :

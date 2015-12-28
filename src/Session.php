@@ -29,8 +29,16 @@ class Session
     {
         $this->config = $config;
         $this->database = $database;
+    }
 
-        switch ($this->config->session['handler']) {
+    /**
+     * Start the session.
+     *
+     * @return void
+     */
+    public function start()
+    {
+        switch ($this->config->get('session', 'handler')) {
             case 'database' :
                 $this->handler = new Session\Database($this->config, $this->database);
                 break;
@@ -40,13 +48,15 @@ class Session
                 break;
         }
 
+        $session = $this->config->get('session');
+
         session_name($this->config->session['name']);
         session_set_cookie_params(
-            $this->config->session['expire'],
-            $this->config->session['path'],
-            $this->config->session['domain'],
-            $this->config->session['secure'],
-            $this->config->session['httponly']
+            $session['expire'],
+            $session['path'],
+            $session['domain'],
+            $session['secure'],
+            $session['httponly']
         );
 
         session_set_save_handler($this->handler, true);

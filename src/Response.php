@@ -120,14 +120,16 @@ class Response
      */
     public function cookie($key, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null)
     {
+        $cookie = $this->config->get('cookie');
+
         $this->cookies[] = [
             'key' => $key,
             'value' => $value,
-            'expire' => null === $expire ? $this->config->cookie['expire'] : $expire,
-            'path' => null === $path ? $this->config->cookie['path'] : $path,
-            'domain' => null === $domain ? $this->config->cookie['domain'] : $domain,
-            'secure' => null === $secure ? $this->config->cookie['secure'] : $secure,
-            'httponly' => null === $httponly ? $this->config->cookie['httponly'] : $httponly
+            'expire' => null === $expire ? $cookie['expire'] : $expire,
+            'path' => null === $path ? $cookie['path'] : $path,
+            'domain' => null === $domain ? $cookie['domain'] : $domain,
+            'secure' => null === $secure ? $cookie['secure'] : $secure,
+            'httponly' => null === $httponly ? $cookie['httponly'] : $httponly
         ];
 
         return $this;

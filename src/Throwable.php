@@ -78,43 +78,52 @@ class Throwable
      */
     public function __construct(Config $config, Template $template)
     {
-        $this->config['app'] = $config->app;
-        $this->config['throwable'] = $config->throwable;
+        $this->config = $config;
         $this->template = $template;
     }
 
     /**
      * Set the initial configuration options.
+     *
+     * @return $this
      */
     public function configure()
     {
-        ini_set('display_errors', $this->config['throwable']['display']);
-        ini_set('reporting', $this->config['throwable']['reporting']);
-        ini_set('log_errors', $this->config['throwable']['log']);
-        ini_set('error_log', $this->config['throwable']['path']);
+        $throwable = $this->config->get('throwable');
+
+        ini_set('display_errors', $throwable['display']);
+        ini_set('reporting', $throwable['reporting']);
+        ini_set('log_errors', $throwable['log']);
+        ini_set('error_log', $throwable['path']);
+
+        return $this;
     }
 
     /**
      * Register throwable & shutdown handlers.
      *
-     * @return void
+     * @return $this
      */
     public function register()
     {
         set_error_handler([$this, 'errorHandler']);
         set_exception_handler([$this, 'exceptionHandler']);
         register_shutdown_function([$this, 'shutdownHandler']);
+
+        return $this;
     }
 
     /**
      * Unregister throwable handlers.
      *
-     * @return void
+     * @return $this
      */
     public function unregister()
     {
         restore_error_handler();
         restore_exception_handler();
+
+        return $this;
     }
 
     /**
@@ -201,8 +210,8 @@ class Throwable
         if (!empty($this->throwable)) {
             ob_get_clean();
 
-            if (empty($this->config['app']['development'])) {
-                call_user_func($this->config['throwable']['callable']);
+            if (empty($this->config->get('app', 'development'))) {
+                call_user_func($this->config->get('throwable', 'callable'));
             } else {
                 $style = $this->template
                     ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
