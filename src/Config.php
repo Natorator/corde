@@ -77,13 +77,14 @@ class Config
     /**
      * Magically call the set method.
      *
+     * @param string $file
      * @param string $key
      * @param mixed $value
      *
      * @return void
      */
-    public function __set($key, $value)
+    public function __set($file, $key, $value)
     {
-        $this->set($key, $value);
+        $this->set($file, $key, $value);
     }
 }

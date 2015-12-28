@@ -37,9 +37,9 @@ class Factory
      */
     public function database(Config $config = null)
     {
-        $config = null === $config ? $this->config() : $config;
-
         if (null === static::$database) {
+            $config = null === $config ? $this->config() : $config;
+
             static::$database = new Database($config);
         }
 
@@ -92,10 +92,10 @@ class Factory
      */
     public function session(Config $config = null, Database $database = null)
     {
-        $config = null === $config ? $this->config() : $config;
-        $database = null === $database ? $this->database() : $database;
-
         if (null === static::$session) {
+            $config = null === $config ? $this->config() : $config;
+            $database = null === $database ? $this->database() : $database;
+
             static::$session = new Session($config, $database);
         }
 

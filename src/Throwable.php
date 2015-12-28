@@ -61,11 +61,6 @@ class Throwable
     ];
 
     /**
-     * @var Router
-     */
-    private $router;
-
-    /**
      * @var Template
      */
     private $template;
@@ -89,20 +84,37 @@ class Throwable
     }
 
     /**
-     * Set throwable handlers.
-     *
-     * @return void
+     * Set the initial configuration options.
      */
-    public function register()
+    public function configure()
     {
         ini_set('display_errors', $this->config['throwable']['display']);
         ini_set('reporting', $this->config['throwable']['reporting']);
         ini_set('log_errors', $this->config['throwable']['log']);
         ini_set('error_log', $this->config['throwable']['path']);
+    }
 
+    /**
+     * Register throwable & shutdown handlers.
+     *
+     * @return void
+     */
+    public function register()
+    {
         set_error_handler([$this, 'errorHandler']);
         set_exception_handler([$this, 'exceptionHandler']);
         register_shutdown_function([$this, 'shutdownHandler']);
+    }
+
+    /**
+     * Unregister throwable handlers.
+     *
+     * @return void
+     */
+    public function unregister()
+    {
+        restore_error_handler();
+        restore_exception_handler();
     }
 
     /**
@@ -132,21 +144,18 @@ class Throwable
     public function errorHandler($code, $message, $file, $line)
     {
         $this->make($code, $this->errorMessage($code), $message, $file, $line);
-
-        exit;
     }
 
     /**
      * Get the error message.
      *
      * @param int $code
+     * @param int $default
      *
      * @return string
      */
-    public function errorMessage($code)
+    public function errorMessage($code, $default = 1)
     {
-        $default = 1;
-
         return isset($this->errorMessages[$code]) ? $this->errorMessages[$code] : $this->errorMessages[$default];
     }
 
@@ -158,21 +167,18 @@ class Throwable
     public function exceptionHandler(\Exception $exception)
     {
         $this->make($exception->getCode(), $this->exceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
-
-        exit;
     }
 
     /**
      * Get the exception message.
      *
      * @param int $code
+     * @param int $default
      *
      * @return string
      */
-    public function exceptionMessage($code)
+    public function exceptionMessage($code, $default = 89)
     {
-        $default = 89;
-
         return isset($this->exceptionMessages[$code]) ? $this->exceptionMessages[$code] : $this->exceptionMessages[$default];
     }
 

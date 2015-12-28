@@ -25,9 +25,7 @@ class Request
      */
     public function domain($url)
     {
-        $parse = parse_url($url);
-
-        return $parse['host'];
+        return parse_url($url, PHP_URL_HOST);
     }
 
     /**
@@ -78,20 +76,23 @@ class Request
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {
             return $_SERVER['SERVER_PROTOCOL'];
         }
-
-        return 'HTTP/1.1';
     }
 
     /**
      * Get the segment.
      *
+     * @param string $uri
      * @param int $index
      *
      * @return mixed
      */
-    public function segment($index = 1)
+    public function segment($uri = null, $index = 1)
     {
-        if ($uri = $this->uri()) {
+        if (null === $uri) {
+            $uri = $this->uri();
+        }
+
+        if ($uri) {
             $segments = explode('/', $uri);
 
             $count = count($segments);
