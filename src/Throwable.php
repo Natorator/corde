@@ -71,15 +71,22 @@ class Throwable
     private $throwable = [];
 
     /**
+     * @var Response
+     */
+    private $response;
+
+    /**
      * Throwable constructor.
      *
      * @param \Abimo\Config $config
      * @param \Abimo\Template $template
+     * @param \Abimo\Response $response
      */
-    public function __construct(Config $config, Template $template)
+    public function __construct(Config $config, Template $template, Response $response)
     {
         $this->config = $config;
         $this->template = $template;
+        $this->response = $response;
     }
 
     /**
@@ -198,6 +205,12 @@ class Throwable
      */
     public function shutdownHandler()
     {
+        if (!headers_sent()) {
+            $this->response
+                ->header('404', true, 404)
+                ->send();
+        }
+
         if ($throwable = error_get_last()) {
             $this->make(
                 $throwable['type'],

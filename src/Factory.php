@@ -67,6 +67,11 @@ class Factory
     }
 
     /**
+     * @var Response
+     */
+    private static $response;
+
+    /**
      * Factory the response object.
      *
      * @param Config $config
@@ -75,11 +80,18 @@ class Factory
      */
     public function response(Config $config = null)
     {
-        $config = null === $config ? $this->config() : $config;
+        if (null === static::$session) {
+            $config = null === $config ? $this->config() : $config;
 
-        return new Response($config);
+            static::$response = new Response($config);
+        }
+
+        return static::$response;
     }
 
+    /**
+     * @var Session
+     */
     private static $session;
 
     /**
@@ -117,14 +129,16 @@ class Factory
      *
      * @param Config $config
      * @param Template $template
+     * @param Response $response
      *
      * @return Throwable
      */
-    public function throwable(Config $config = null, Template $template = null)
+    public function throwable(Config $config = null, Template $template = null, Response $response = null)
     {
         $config = null === $config ? $this->config() : $config;
         $template = null === $template ? $this->template() : $template;
+        $response = null === $response ? $this->response() : $response;
 
-        return new Throwable($config, $template);
+        return new Throwable($config, $template, $response);
     }
 }
