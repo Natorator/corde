@@ -94,7 +94,7 @@ class Response
      *
      * @return $this
      */
-    public function header($string, $replace = true, $code = 200)
+    public function header($string, $replace = true, $code = null)
     {
         $this->headers[] = [
             'string' => $string,
