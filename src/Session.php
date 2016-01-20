@@ -50,7 +50,7 @@ class Session
 
         $session = $this->config->get('session');
 
-        session_name($this->config->session['name']);
+        session_name($session['name']);
         session_set_cookie_params(
             $session['expire'],
             $session['path'],
