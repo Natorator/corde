@@ -205,12 +205,6 @@ class Throwable
      */
     public function shutdownHandler()
     {
-        if (!headers_sent()) {
-            $this->response
-                ->header('404', true, 404)
-                ->send();
-        }
-
         if ($throwable = error_get_last()) {
             $this->make(
                 $throwable['type'],
@@ -222,6 +216,12 @@ class Throwable
 
         if (!empty($this->throwable)) {
             ob_get_clean();
+
+            if (empty($this->response->headers)) {
+                $this->response
+                    ->header('404', true, 404)
+                    ->send();
+            }
 
             if (empty($this->config->get('app', 'development'))) {
                 call_user_func($this->config->get('throwable', 'callable'));
