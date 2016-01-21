@@ -52,17 +52,19 @@ class Session
                 break;
         }
 
-        $session = $this->config->get('session');
+        if (!isset($_SESSION)) {
+            $session = $this->config->get('session');
 
-        session_name($session['name']);
-        session_set_cookie_params(
-            $session['expire'],
-            $session['path'],
-            $session['domain'],
-            $session['secure'],
-            $session['httponly']
-        );
+            session_name($session['name']);
+            session_set_cookie_params(
+                $session['expire'],
+                $session['path'],
+                $session['domain'],
+                $session['secure'],
+                $session['httponly']
+            );
 
-        session_start();
+            session_start();
+        }
     }
 }
