@@ -41,10 +41,14 @@ class Session
         switch ($this->config->get('session', 'handler')) {
             case 'database' :
                 $this->handler = new Session\Database($this->config, $this->database);
+                session_set_save_handler($this->handler, true);
+
                 break;
 
-            default :
+            case 'file' :
                 $this->handler = new Session\File($this->config);
+                session_set_save_handler($this->handler, true);
+
                 break;
         }
 
@@ -59,7 +63,6 @@ class Session
             $session['httponly']
         );
 
-        session_set_save_handler($this->handler, true);
         session_start();
     }
 }
