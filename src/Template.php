@@ -15,6 +15,16 @@ class Template
     private $file = '';
 
     /**
+     * @var Throwable
+     */
+    private $throwable;
+
+    public function __construct($throwable)
+    {
+        $this->throwable = $throwable;
+    }
+
+    /**
      * Set the file.
      *
      * @param string $file
@@ -83,6 +93,12 @@ class Template
         extract($this->data, EXTR_SKIP);
 
         require $this->file;
+
+        if (!empty($this->throwable->throwable)) {
+            if (empty($this->throwable->shutdown)) {
+                exit;
+            }
+        }
 
         return ob_get_clean();
     }

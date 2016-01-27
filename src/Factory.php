@@ -117,28 +117,39 @@ class Factory
     /**
      * Factory the template object.
      *
+     * @param Throwable $throwable
+     *
      * @return Template
      */
-    public function template()
+    public function template(Throwable $throwable = null)
     {
-        return new Template();
+        $throwable = null === $throwable ? $this->throwable() : $throwable;
+
+        return new Template($throwable);
     }
+
+    /**
+     * @var Throwable
+     */
+    private static $throwable;
 
     /**
      * Factory the throwable object.
      *
      * @param Config $config
-     * @param Template $template
      * @param Response $response
      *
      * @return Throwable
      */
-    public function throwable(Config $config = null, Template $template = null, Response $response = null)
+    public function throwable(Config $config = null, Response $response = null)
     {
-        $config = null === $config ? $this->config() : $config;
-        $template = null === $template ? $this->template() : $template;
-        $response = null === $response ? $this->response() : $response;
+        if (null === static::$throwable) {
+            $config = null === $config ? $this->config() : $config;
+            $response = null === $response ? $this->response() : $response;
 
-        return new Throwable($config, $template, $response);
+            static::$throwable = new Throwable($config, $response);
+        }
+
+        return static::$throwable;
     }
 }

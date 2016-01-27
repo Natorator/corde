@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset='utf-8'>
-    <title><?php echo !empty($throwable['type']) ? $throwable['type'] : 'Throwable dashboard'; ?></title>
-    <meta charset='utf-8'>
-    <meta name='robots' content='no-index, no-follow' >
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <style><?php echo (!empty($style) ? $style : ''); ?></style>
+    <title><?php echo $this->throwable['type']; ?></title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name='robots' content='no-index, no-follow'>
 </head>
 <body>
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <th>Code</th>
-                <th>Type</th>
-                <th>Message</th>
-                <th>File</th>
-                <th>Line</th>
-            </tr>
+        <tr>
+            <th>Code</th>
+            <th>Type</th>
+            <th>Message</th>
+            <th>File</th>
+            <th>Line</th>
+        </tr>
         </thead>
         <tbody>
-        <?php if (!empty($throwable)) : ?>
-            <tr>
-                <td class=""><span class=""><?php echo $throwable['code']; ?></span></td>
-                <td class=""><span class=""><?php echo $throwable['type']; ?></span></td>
-                <td class=""><span class=""><?php echo $throwable['message']; ?></span></td>
-                <td class=""><span class=""><?php echo $throwable['file']; ?></span></td>
-                <td class=""><span class=""><?php echo $throwable['line']; ?></span></td>
-            </tr>
-        <?php endif; ?>
+        <tr>
+            <td class=""><span class=""><?php echo $this->throwable['code']; ?></span></td>
+            <td class=""><span class=""><?php echo $this->throwable['type']; ?></span></td>
+            <td class=""><span class=""><?php echo $this->throwable['message']; ?></span></td>
+            <td class=""><span class=""><?php echo $this->throwable['file']; ?></span></td>
+            <td class=""><span class=""><?php echo $this->throwable['line']; ?></span></td>
+        </tr>
         </tbody>
     </table>
 </body>

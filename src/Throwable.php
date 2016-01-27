@@ -61,14 +61,9 @@ class Throwable
     ];
 
     /**
-     * @var Template
-     */
-    private $template;
-
-    /**
      * @var array
      */
-    private $throwable = [];
+    public $throwable = [];
 
     /**
      * @var Response
@@ -76,16 +71,24 @@ class Throwable
     private $response;
 
     /**
+     * @var boolean
+     */
+    public $shutdown = false;
+
+    /**
+     * @var string
+     */
+    private $style = '';
+
+    /**
      * Throwable constructor.
      *
      * @param \Abimo\Config $config
-     * @param \Abimo\Template $template
      * @param \Abimo\Response $response
      */
-    public function __construct(Config $config, Template $template, Response $response)
+    public function __construct(Config $config, Response $response)
     {
         $this->config = $config;
-        $this->template = $template;
         $this->response = $response;
     }
 
@@ -205,11 +208,7 @@ class Throwable
      */
     public function shutdownHandler()
     {
-        if (!headers_sent()) {
-            $this->response
-                ->header('404', true, 404)
-                ->send();
-        }
+        $this->shutdown = true;
 
         if ($throwable = error_get_last()) {
             $this->make(
@@ -223,18 +222,20 @@ class Throwable
         if (!empty($this->throwable)) {
             ob_get_clean();
 
+            $this->response
+                ->header('404', true, 404)
+                ->send();
+
             if (empty($this->config->get('app', 'development'))) {
                 call_user_func($this->config->get('throwable', 'callable'));
             } else {
-                $style = $this->template
-                    ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css')
-                    ->render();
+                ob_start();
+                require(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Style.css');
+                $this->style = ob_get_clean();
 
-                echo $this->template
-                    ->file(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php')
-                    ->set('style', $style)
-                    ->set('throwable', $this->throwable)
-                    ->render();
+                ob_start();
+                require(__DIR__.DIRECTORY_SEPARATOR.'Throwable'.DIRECTORY_SEPARATOR.'Dashboard.php');
+                echo ob_get_clean();
             }
         }
     }
