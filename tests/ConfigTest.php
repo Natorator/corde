@@ -84,8 +84,8 @@ class ConfigTest extends PHPUnit_Framework_TestCase
      */
     public function testSet($directory, $file, $content, $key, $value)
     {
-        if (null === $key || null === $value) {
-            $this->markTestSkipped('Key and value must be set.');
+        if (null !== $key || null !== $value) {
+//            $this->markTestSkipped('Key and value must be set.');
         }
 
         $file = ucfirst($file);
