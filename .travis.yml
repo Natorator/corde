@@ -7,4 +7,10 @@ php:
 
 sudo: false
 
+before_install:
+  - sudo composer self-update
+
+install:
+  - composer install --require-dev
+
 script: phpunit tests
