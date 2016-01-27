@@ -41,25 +41,30 @@ class Session
         switch ($this->config->get('session', 'handler')) {
             case 'database' :
                 $this->handler = new Session\Database($this->config, $this->database);
+                session_set_save_handler($this->handler, true);
+
                 break;
 
-            default :
+            case 'file' :
                 $this->handler = new Session\File($this->config);
+                session_set_save_handler($this->handler, true);
+
                 break;
         }
 
-        $session = $this->config->get('session');
+        if (!isset($_SESSION)) {
+            $session = $this->config->get('session');
 
-        session_name($this->config->session['name']);
-        session_set_cookie_params(
-            $session['expire'],
-            $session['path'],
-            $session['domain'],
-            $session['secure'],
-            $session['httponly']
-        );
+            session_name($session['name']);
+            session_set_cookie_params(
+                $session['expire'],
+                $session['path'],
+                $session['domain'],
+                $session['secure'],
+                $session['httponly']
+            );
 
-        session_set_save_handler($this->handler, true);
-        session_start();
+            session_start();
+        }
     }
 }

@@ -18,6 +18,10 @@
     "php": ">= 5.5.0",
     "ext-pdo": "*"
   },
+  "require-dev": {
+    "phpunit/phpunit": "5.1.*",
+    "mikey179/vfsStream": "1.*"
+  },
   "autoload": {
     "psr-4": {
       "Abimo\\": "src/"

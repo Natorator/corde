@@ -6,14 +6,6 @@ class Database implements \SessionHandlerInterface
 {
     public function __construct(\Abimo\Config $config, \Abimo\Database $database)
     {
-        //TODO -
-        //CREATE TABLE `sessions` (
-        //`id` CHAR (32) PRIMARY KEY NOT NULL,
-        //`data` TEXT NULL,
-        //`created` TIMESTAMP DEFAULT NULL,
-        //`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)
-        //ENGINE = InnoDB DEFAULT CHARSET = utf8
-
         $this->config = $config;
         $this->database = $database;
 
