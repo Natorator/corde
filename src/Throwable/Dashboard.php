@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name='robots' content='no-index, no-follow'>
+    <style><?php echo $this->style; ?></style>
 </head>
 <body>
     <table class="table table-bordered">
