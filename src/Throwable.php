@@ -71,11 +71,6 @@ class Throwable
     private $response;
 
     /**
-     * @var boolean
-     */
-    public $shutdown = false;
-
-    /**
      * @var string
      */
     private $style = '';
@@ -183,7 +178,7 @@ class Throwable
      *
      * @param \Exception $exception
      */
-    public function exceptionHandler(\Exception $exception)
+    public function exceptionHandler($exception)
     {
         $this->make($exception->getCode(), $this->exceptionMessage($exception->getCode()), $exception->getMessage(), $exception->getFile(), $exception->getLine());
     }
@@ -208,8 +203,6 @@ class Throwable
      */
     public function shutdownHandler()
     {
-        $this->shutdown = true;
-
         if ($throwable = error_get_last()) {
             $this->make(
                 $throwable['type'],

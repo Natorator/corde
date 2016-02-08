@@ -76,28 +76,26 @@ class Template
     }
 
     /**
-     * Render the file.
+     * Render the file or input.
      *
-     * @param string $file
+     * @param string $input
      *
      * @return string
      */
-    public function render($file = '')
+    public function render($input = null)
     {
-        if (!empty($file)) {
-            $this->file($file);
-        }
-
         ob_start();
 
         extract($this->data, EXTR_SKIP);
 
-        require $this->file;
+        if (null !== $input) {
+            echo $input;
+        } else {
+            require $this->file;
+        }
 
         if (!empty($this->throwable->throwable)) {
-            if (empty($this->throwable->shutdown)) {
-                exit;
-            }
+            exit;
         }
 
         return ob_get_clean();

@@ -142,12 +142,14 @@ class Response
      */
     public function send()
     {
-        foreach ($this->headers as $header) {
-            header($header['string'], $header['replace'], $header['code']);
-        }
+        if (!headers_sent()) {
+            foreach ($this->headers as $header) {
+                header($header['string'], $header['replace'], $header['code']);
+            }
 
-        foreach ($this->cookies as $cookie) {
-            setcookie($cookie['key'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            foreach ($this->cookies as $cookie) {
+                setcookie($cookie['key'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            }
         }
     }
 }

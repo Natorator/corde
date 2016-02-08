@@ -4,6 +4,12 @@ namespace Abimo\Session;
 
 class Database implements \SessionHandlerInterface
 {
+    /**
+     * Database constructor.
+     *
+     * @param \Abimo\Config $config
+     * @param \Abimo\Database $database
+     */
     public function __construct(\Abimo\Config $config, \Abimo\Database $database)
     {
         $this->config = $config;
@@ -16,16 +22,27 @@ class Database implements \SessionHandlerInterface
         $this->statement['created'] = $this->database->backtick('created');
     }
 
+    /**
+     * @param string $path
+     * @param string $id
+     */
     public function open($path, $id)
     {
         //
     }
 
+    /**
+     *
+     */
     public function close()
     {
         //
     }
 
+    /**
+     * @param string $id
+     * @return array
+     */
     public function read($id)
     {
         $statement = $this->database->handle
@@ -41,6 +58,10 @@ class Database implements \SessionHandlerInterface
         return $statement->fetchAll();
     }
 
+    /**
+     * @param string $id
+     * @param string $data
+     */
     public function write($id, $data)
     {
         $statement = $this->database->handle
@@ -67,6 +88,9 @@ class Database implements \SessionHandlerInterface
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function destroy($id)
     {
         $statement = $this->database->handle
@@ -82,6 +106,9 @@ class Database implements \SessionHandlerInterface
         setcookie(session_name(), '', time() - 3600);
     }
 
+    /**
+     * @param int $lifetime
+     */
     public function gc($lifetime)
     {
         $statement = $this->database->handle

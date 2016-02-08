@@ -47,16 +47,6 @@ class Factory
     }
 
     /**
-     * Factory the helper object.
-     *
-     * @return Helper
-     */
-    public function helper()
-    {
-        return new Helper();
-    }
-
-    /**
      * Factory the request object.
      *
      * @return Request
