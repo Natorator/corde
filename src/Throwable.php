@@ -76,6 +76,11 @@ class Throwable
     private $style = '';
 
     /**
+     * @var boolean
+     */
+    public $shutdown;
+
+    /**
      * Throwable constructor.
      *
      * @param \Abimo\Config $config
@@ -203,6 +208,8 @@ class Throwable
      */
     public function shutdownHandler()
     {
+        $this->shutdown = true;
+
         if ($throwable = error_get_last()) {
             $this->make(
                 $throwable['type'],

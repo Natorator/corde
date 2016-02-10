@@ -94,7 +94,7 @@ class Template
             require $this->file;
         }
 
-        if (!empty($this->throwable->throwable)) {
+        if (!empty($this->throwable->throwable) && empty($this->throwable->shutdown)) {
             exit;
         }
 
