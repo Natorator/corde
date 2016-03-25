@@ -226,7 +226,7 @@ class Throwable
                 ->header('404', true, 404)
                 ->send();
 
-            if (empty($this->config->get('app', 'development'))) {
+            if (empty($this->config->get('throwable', 'development'))) {
                 call_user_func($this->config->get('throwable', 'callable'));
             } else {
                 ob_start();
