@@ -223,7 +223,7 @@ class Throwable
             ob_get_clean();
 
             $this->response
-                ->header('404', true, 404)
+                ->header('HTTP/1.0 404 Not found', true, 404)
                 ->send();
 
             if (empty($this->config->get('throwable', 'development'))) {
